@@ -1,0 +1,293 @@
+package org.tpweb.formbuilder;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpProtocolParams;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.util.Log;
+
+public class CouchDB {
+	private String APP_USER_AGENT = "TPWeb Couchdb API";
+	private String server = "192.168.21.159";
+	private String serverPort = "5984";
+	private String serverProtocol = "http";
+	private String dbname = "";
+	private Boolean debug = true;
+	
+	public CouchDB() {
+		
+	}
+	public CouchDB(String dbname) {
+		this.dbname = dbname;
+	}
+	public CouchDB(String dbname, String server, String serverPort, String protocol) {
+		this.dbname = dbname;
+		this.server = server;
+		this.serverPort = serverPort;
+		this.serverProtocol = protocol;
+	}
+	public CouchDB(String server, String serverPort, String protocol) {
+		this.server = server;
+		this.serverPort = serverPort;
+		this.serverProtocol = protocol;
+	}
+	
+	public void setServer(String server) {
+		this.server = server;
+	}
+	
+	public void setServerPort(String serverPort) {
+		this.serverPort = serverPort;
+	}
+	
+	public void setServerProtocol(String protocol) {
+		this.serverProtocol = protocol;
+	}
+	
+	private String getUrl(String str) {
+		return serverProtocol + "://" + server + ":" + serverPort + "/" + str;
+	}
+	
+
+
+	public Boolean createDatabase(String database) {
+		HashMap<String, Object> fields = new HashMap<String, Object>();
+		fields.put("fields", "");
+		try {
+			String get = httpPutRequest(this.getUrl(database), fields);
+			if(debug) { 
+				Log.i("couchdb", "createDatabase url:" + this.getUrl(database)); 
+				Log.i("couchdb", "createDatabase request:" + get); 
+			}
+			JSONObject jsonResponse = new JSONObject(get);
+			if(jsonResponse.has("ok") && jsonResponse.getBoolean("ok")) {
+				this.dbname = database;
+				return true;
+			} else if(jsonResponse.has("error") && jsonResponse.getString("error").equals("file_exists")) {
+				this.dbname = database;
+				return true;
+			} else if(jsonResponse.has("db_name") && jsonResponse.getString("db_name").equals(database)) {
+				this.dbname = database;
+				return true;
+			} else {
+				return false;
+			}
+		} catch (JSONException e) {
+			if(debug) { Log.i("couchdb", "createDatabase json:" + e.getMessage()); }
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(debug) { Log.i("couchdb", "createDatabase exception:" + e.getMessage()); }
+		}
+		return false;
+	}
+	
+	public HashMap<String, Object> getAllDocuments() {
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		HashMap<String, Object> fields = new HashMap<String, Object>();
+		fields.put("fields", "");
+		try {
+			if(debug) { Log.i("couchdb", "getAllDocuments url:" + this.getUrl(this.dbname + "/_all_docs")); }
+			String get = httpGetRequest(this.getUrl(this.dbname + "/_all_docs"), fields);
+			if(debug) { Log.i("couchdb", "getAllDocuments request:" + get); }
+			JSONObject jsonResponse = new JSONObject(get);
+			if(jsonResponse.has("total_rows")) {
+				result.put("total_rows", jsonResponse.getInt("total_rows"));
+			}
+			if(jsonResponse.has("offset")) {
+				result.put("offset", jsonResponse.getInt("offset"));
+			}
+			if(jsonResponse.has("rows")) {
+				result.put("rows", jsonResponse.get("rows"));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			if(debug) { Log.i("couchdb", "getAllDocuments:" + e.getMessage()); }
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(debug) { Log.i("couchdb", "getAllDocuments:" + e.getMessage()); }
+		}
+		return result;
+	}
+	
+	public JSONObject getDocument(String id) {
+		HashMap<String, Object> fields = new HashMap<String, Object>();
+		fields.put("fields", "");
+		try {
+			if(debug) { Log.i("couchdb", "getDocument url:" + this.getUrl(this.dbname + "/" + id)); }
+			String get = httpGetRequest(this.getUrl(this.dbname + "/" + id), fields);
+			if(debug) { Log.i("couchdb", "getDocument request:" + get); }
+			JSONObject jsonResponse = new JSONObject(get);
+			return jsonResponse;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			if(debug) { Log.i("couchdb", "getDocument:" + e.getMessage()); }
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(debug) { Log.i("couchdb", "getDocument:" + e.getMessage()); }
+		}
+		return null;
+	}
+
+		
+	public Boolean createDocument(JSONObject f) {
+		return this.createDocument(this.dbname, f);
+	}
+		
+
+	public Boolean createDocument(String database, JSONObject f) {
+		//HashMap<String, Object> fields = f;
+		String id = java.util.UUID.randomUUID().toString();
+		try {
+			//String get = httpPutRequest(this.getUrl(this.dbname + "/" + id), fields);
+			URL url = new URL(this.getUrl(database + "/" + id));
+			HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+			httpCon.setDoOutput(true);
+			httpCon.setRequestMethod("PUT");
+			httpCon.setDoInput(true);
+			OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+	        out.write(f.toString());
+	        out.close();
+
+	        BufferedReader in = new BufferedReader(new InputStreamReader(httpCon.getInputStream()));
+	        String get;
+	        while ((get = in.readLine()) != null) {
+	        	
+	        }
+	        in.close();
+			if(debug) { 
+				Log.i("couchdb", "createDocument url:" + this.getUrl(database + "/" + id)); 
+				Log.i("couchdb", "createDocument request:" + get); 
+			}
+			//JSONObject jsonResponse = new JSONObject(get);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			if(debug) { Log.i("couchdb", "createDocument exception:" + e.getMessage()); }
+		}
+		return true;
+	}
+	
+
+	
+
+	public String httpGetRequest(String url, HashMap<String, Object> fields) {
+		String str = "";
+		String[] velden = ((String) fields.get("fields")).split(",");
+		for(int i = 0; i < velden.length; i++) {
+			str += (i == 0) ? "?" : "&" + velden[i] + "=" + fields.get(velden[i]);
+			if(debug) {  Log.i("couchdb", "get:" + velden[i] + " : " + fields.get(velden[i])); }
+		}
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpProtocolParams.setUserAgent(httpclient.getParams(), this.APP_USER_AGENT);
+		HttpResponse response;
+		String responseString = null;
+		try {
+			response = httpclient.execute(new HttpGet(url + str));
+			StatusLine statusLine = response.getStatusLine();
+			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				response.getEntity().writeTo(out);
+				out.close();
+				responseString = out.toString();
+			} else {
+				response.getEntity().getContent().close();
+				throw new IOException(statusLine.getReasonPhrase());
+			}
+		} catch (ClientProtocolException e) {
+			if(debug) { Log.i("couchdb", "ClientProtocolException: " + e.getMessage()); }
+		} catch (IOException e) {
+			if(debug) { Log.i("couchdb", "IOException: " + e.getMessage()); }
+		}
+		return responseString;
+	}
+	
+	public String httpPostRequest(String url, HashMap<String, Object> fields) {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpProtocolParams.setUserAgent(httpclient.getParams(), this.APP_USER_AGENT);
+		HttpPost httppost = new HttpPost(url);
+        
+		String responseString = "";
+		try {
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(fields.size()-1);
+			String[] velden = ((String) fields.get("fields")).split(",");
+			for(String v : velden) {
+				nameValuePairs.add(new BasicNameValuePair(v, "" + fields.get(v)));
+				if(debug) { Log.i("couchdb", "post:" + v + "=" + fields.get(v)); }
+			}
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			//httppost.setHeader("Content-Type", "application/json");
+        
+			HttpResponse response;
+			response = httpclient.execute(httppost);
+			StatusLine statusLine = response.getStatusLine();
+			if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				response.getEntity().writeTo(out);
+				out.close();
+				responseString = out.toString();
+			} else {
+				response.getEntity().getContent().close();
+				throw new IOException(statusLine.getReasonPhrase());
+			}
+		} catch (ClientProtocolException e) {
+			if(debug) { Log.i("couchdb", "ClientProtocolException: " + e.getMessage()); }
+		} catch (IOException e) {
+			if(debug) { Log.i("couchdb", "IOException: " + e.getMessage()); }
+		}
+		return responseString;
+	}
+	
+	public String httpPutRequest(String url, HashMap<String, Object> fields) {
+		HttpClient httpclient = new DefaultHttpClient();
+		HttpProtocolParams.setUserAgent(httpclient.getParams(), this.APP_USER_AGENT);
+		HttpPut httpput = new HttpPut(url);
+        
+		String responseString = "";
+		try {
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(fields.size()-1);
+			String[] velden = ((String) fields.get("fields")).split(",");
+			for(int i = 0; i < velden.length; i++) {
+				if(fields.get(velden[i]) != null) {
+					nameValuePairs.add(new BasicNameValuePair(velden[i], "" + fields.get(velden[i])));
+					if(debug) { Log.i("couchdb", "put:" + velden[i] + "=" + fields.get(velden[i])); }
+				}
+			}
+			Log.i("couchdb", "field size = " + fields.size());
+			httpput.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			HttpResponse response;
+			response = httpclient.execute(httpput);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			response.getEntity().writeTo(out);
+			out.close();
+			responseString = out.toString();
+		} catch (ClientProtocolException e) {
+			if(debug) { Log.i("couchdb", "ClientProtocolException: " + e.getMessage()); }
+		} catch (IOException e) {
+			if(debug) { Log.i("couchdb", "IOException: " + e.getMessage()); }
+		}
+		return responseString;
+	}
+}

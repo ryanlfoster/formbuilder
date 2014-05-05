@@ -1,0 +1,40 @@
+package org.tpweb.formbuilder;
+
+import java.io.IOException;
+import java.util.Properties;
+import java.util.Map.Entry;
+
+import android.app.Activity;
+import android.os.Handler;
+import android.util.Log;
+
+public class CouchDBProxy extends NanoHTTPD {
+	private Handler handler;
+	private Activity activity;
+    public CouchDBProxy(Handler h) throws IOException {
+	      super(8080, null);
+	      handler = h;
+	      activity = a;
+	    }
+	 
+	    @Override
+	    public Response serve(String uri, String method, Properties header, Properties parms, Properties files) {
+	    	if(method == "POST") {
+	    		Log.i("server", uri);
+	    		Log.i("server", method);
+	    	}
+	      
+	      final StringBuilder buf = new StringBuilder();
+	      for (Entry<Object, Object> kv : header.entrySet())
+	        buf.append(kv.getKey() + " : " + kv.getValue() + "\n");
+	      handler.post(new Runnable() {
+	        @Override
+	        public void run() {
+	        	Log.i("server", buf.toString());
+	          //hello.setText(buf);
+	        }
+	      });
+	      final String html = "<html><head><head><body><h1>Hello, World</h1></body></html>";
+	      return new NanoHTTPD.Response(HTTP_OK, MIME_HTML, html);
+	    }
+	  }

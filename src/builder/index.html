@@ -21,7 +21,7 @@
 			loadForm = "<formulier><row><colomn><width>6</width><field>text</field><name>name</name><label>Naam</label><value></value><placeholder>Geef je naam</placeholder><required>required</required></colomn><colomn><width>6</width><field>select</field><name>provincie</name><label>Provincie:</label><required>required</required><multi><value>1</value><label>Antwerpen</label></multi><multi><value>2</value><label>Limburg</label></multi><multi><value>3</value><label>Vlaams-Brabant</label></multi><multi><value>4</value><label>Oost-vlaanderen</label></multi><multi><value>5</value><label>West-vlaanderen</label></multi></colomn></row><row><colomn><width>12</width><field>radio</field><name>geslacht</name><label>Geslacht</label><multi><value>1</value><label>Man</label></multi><multi><value>2</value><label>Vrouw</label></multi></colomn></row><row><colomn><width>12</width><field>submit</field><value>Verzend</value></colomn></row></formulier>";
 
 			$('.formuliermaker').FormBuilder({
-				INPUT_TYPES:["text", "password", "email", "submit", "select", "checkbox", "radio", "hidden"],
+				INPUT_TYPES:["text", "password", "email", "submit", "select", "checkbox", "radio", "hidden", "textarea"],
 				xml: loadForm,
 				database: {
 					'database':'couchdbproxy', 
@@ -102,7 +102,7 @@
 				<input type="submit" value="Publish" class="btn btn-primary publish">
 			</div>
 			<div class="col-md-9">
-				<h2>Formulier</h2> <a href="javascript:void();" class="addRow">Add row</a><br>
+				<h2>Formulier</h2> <a href="javascript:void();" class="addSection">Add section</a><br>
 
 				<div class="formbuilder">
 

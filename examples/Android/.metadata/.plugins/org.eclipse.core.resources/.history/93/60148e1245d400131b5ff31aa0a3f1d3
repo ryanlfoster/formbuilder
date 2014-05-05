@@ -1,0 +1,5 @@
+package org.tpweb.formbuilder;
+
+public class CouchDBProxy {
+
+}

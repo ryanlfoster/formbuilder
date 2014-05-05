@@ -10,10 +10,12 @@
  						"select",
  						"checkbox",
  						"radio",
- 						"hidden"
+ 						"hidden",
+ 						"textarea",
  					],
  					preview: false,
  					newRow: '<div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn"></div></div>',
+ 					newSection: '<section><h2>{name}</h2><a href="javascript:void();" class="addRow">add row</a><br></section>',
  					formUrl: 'submit.html',
  					xml: '',
  					database: {
@@ -27,6 +29,7 @@
  					formRev:'',
  			};
  			var CONTAINER = $(this);
+ 			var FORM = $(this).find('.formbuilder');
  			var FIELD = new Array();
 
 
@@ -77,6 +80,11 @@
  				'field':'<input type="hidden" name="{name}" value="{value}">', 
  				'preview':'<input type="hidden" name="{name}" value="{value}">',
  				'options':'name,value'};
+ 			FIELD['textarea'] = {
+ 				'name':'groot tekst veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><textarea name="{name}" class="form-control">{value}</textarea></div>', 
+ 				'preview':'<textarea name="{name}" class="form-control">Hier komt je tekst</textarea>',
+ 				'options':'name,label,value,placeholder,required'};
 
             var options = $.extend(defaults, options);
 			var selectedIndex = 0;
@@ -97,10 +105,16 @@
 				}
 			});
 
-			$('.addRow').click(function(e) {
+			$('.addSection').click(function(e) {
+				e.preventDefault();
+				var section = $(defaults.newSection);
+				$('.formbuilder').append(section);
+			});
+
+			$('.formbuilder').on('click', '.addRow', function(e) {
 				e.preventDefault();
 				var row = $(defaults.newRow);
-				$('.formbuilder').append(row);
+				$(this).parent().append(row);
 				$(".colomn").removeClass('active');
 				row.find('.colomn').addClass('active');
 			});
@@ -232,44 +246,47 @@
 
 			function generateXML() {
 				var str = "<formulier>";
-				$('.formbuilder .row').each(function(i) {
-					str += "<row>";
-					$(this).find('.colomn').each(function(i) {
-						var colomn = $(this);
-						var field = FIELD[$(this).attr('data-name')];
-						str += "<colomn>";
-						var width = 0;
-						for(i = 1; i <= 12; i++) {
-							if(colomn.hasClass('col-md-' + i)) {
-								width = i;
+				$('.formbuilder section').each(function(i) {
+					str += "<section>";
+					$('.formbuilder .row').each(function(i) {
+						str += "<row>";
+						$(this).find('.colomn').each(function(i) {
+							var colomn = $(this);
+							var field = FIELD[$(this).attr('data-name')];
+							str += "<colomn>";
+							var width = 0;
+							for(i = 1; i <= 12; i++) {
+								if(colomn.hasClass('col-md-' + i)) {
+									width = i;
+								}
 							}
-						}
-						str += "<width>" + width + "</width>";
-						if(field  !== undefined && field.name  !== undefined) {
-							str += "<field>" + $(this).attr('data-name') + "</field>";
+							str += "<width>" + width + "</width>";
+							if(field  !== undefined && field.name  !== undefined) {
+								str += "<field>" + $(this).attr('data-name') + "</field>";
 
-							var settings = field.options.split(",");
-							$.each(settings, function(index, value) {
-								var waarde = "";
-								if(colomn.attr('data-frm-' + value) !== undefined) {
-									waarde = colomn.attr('data-frm-' + value);
-								}
-								str += "<" + value + ">" + waarde + "</" + value + ">";
-							});
-							if(colomn.attr('data-name') == "select" || colomn.attr('data-name') == "checkbox" ||colomn.attr('data-name') == "radio") {
-								if(colomn.attr('data-frm-multi') !== undefined) {
-									var json = eval('(' + colomn.attr('data-frm-multi') + ')');
-									$.each(json, function(i, value) {
-										str += "<multi><value>" + value.value + "</value><label>" + value.label + "</label></multi>";
-									});
+								var settings = field.options.split(",");
+								$.each(settings, function(index, value) {
+									var waarde = "";
+									if(colomn.attr('data-frm-' + value) !== undefined) {
+										waarde = colomn.attr('data-frm-' + value);
+									}
+									str += "<" + value + ">" + waarde + "</" + value + ">";
+								});
+								if(colomn.attr('data-name') == "select" || colomn.attr('data-name') == "checkbox" ||colomn.attr('data-name') == "radio") {
+									if(colomn.attr('data-frm-multi') !== undefined) {
+										var json = eval('(' + colomn.attr('data-frm-multi') + ')');
+										$.each(json, function(i, value) {
+											str += "<multi><value>" + value.value + "</value><label>" + value.label + "</label></multi>";
+										});
+									}
 								}
 							}
-						}
-						str += "</colomn>";
+							str += "</colomn>";
+						});
+						str += "</row>";
 					});
-					str += "</row>";
+					str += "</section>";
 				});
-
 
 				str += "</formulier>";
 				return str;
@@ -278,67 +295,72 @@
 			function generateHTML() {
 				var form = '<form></form>';
 				form = $(form);
-				$('.formbuilder .row').each(function(i) {
-					var row = $('<div class="row"></div>');
-					$(this).find('.colomn').each(function(i) {
-						var field = FIELD[$(this).attr('data-name')];
-						var width = "col-md-12";
-						var colomn = $(this);
-						for(var i = 1; i <= 12; i++) {
-							if($(this).hasClass('col-md-' + i)) {
-								width = "col-md-" + i;
-							}
-						}
-						var c = $('<div class="' + width + '"></div>');
-						if(field  !== undefined && field.name  !== undefined) {
-							var settings = field.options.split(",");
-							var html = field.field;
-							$.each(settings, function(index, value) {
-								html = html.replace('{' + value + '}', colomn.attr('data-frm-' + value));
-							});
-							$(c).append(html);
-							$.each(settings, function(index, value) {
-								if(colomn.attr('data-frm-' + value) !== undefined) {
-									$(c).find('input').attr(value, colomn.attr('data-frm-' + value));
-									$(c).find('select').attr(value, colomn.attr('data-frm-' + value));
+				$('.formbuilder section').each(function(i) {
+					var section = $('<section><h2>{name}</h2></section>')
+					$('.formbuilder .row').each(function(i) {
+						var row = $('<div class="row"></div>');
+						$(this).find('.colomn').each(function(i) {
+							var field = FIELD[$(this).attr('data-name')];
+							var width = "col-md-12";
+							var colomn = $(this);
+							for(var i = 1; i <= 12; i++) {
+								if($(this).hasClass('col-md-' + i)) {
+									width = "col-md-" + i;
 								}
-							});
-
-							if(colomn.attr('data-name') == "select") {
-								var json = "[";
-								$(c).find('select').html('');
-								var j = eval('(' + colomn.attr('data-frm-multi') + ')');
-								$.each(j, function(i, value) {
-									json += "{'label':'" + value.label + "', 'value':'" + value.value + "'},";
-									$(c).find('select').append('<option value="' + value.value + '">' + value.label + '</option>');
-								});
-								json += "]";
-								//$(c).attr('data-frm-multi', json);
-							} else if(colomn.attr('data-name') == "checkbox") {
-								var json = "[";
-								$(c).find('input').remove();
-								var j = eval('(' + colomn.attr('data-frm-multi') + ')');
-								$.each(j, function(i, value) {
-									json += "{'label':'" + value.label + "', 'value':'" + value.value + "'},";
-									$(c).append('<label><input type="checkbox" name="' + colomn.attr('data-frm-name') + '[]" value="' + value.value + '">' + value.label + '</label>');
-								});
-								json += "]";
-								//$(c).attr('data-frm-multi', json);
-							} else if(colomn.attr('data-name') == "radio") {
-								var json = "[";
-								$(c).find('input').remove();
-								var j = eval('(' + colomn.attr('data-frm-multi') + ')');
-								$.each(j, function(i, value) {
-									json += "{'label':'" + value.label + "', 'value':'" + value.value + "'},";
-									$(c).append('<label><input type="radio" name="' + colomn.attr('data-frm-name') + '" value="' + value.value + '">' + value.label + '</label>');
-								});
-								json += "]";
-								//$(c).attr('data-frm-multi', json);
 							}
-						}
-						row.append(c);
+							var c = $('<div class="' + width + '"></div>');
+							if(field  !== undefined && field.name  !== undefined) {
+								var settings = field.options.split(",");
+								var html = field.field;
+								$.each(settings, function(index, value) {
+									html = html.replace('{' + value + '}', colomn.attr('data-frm-' + value));
+								});
+								$(c).append(html);
+								$.each(settings, function(index, value) {
+									if(colomn.attr('data-frm-' + value) !== undefined) {
+										$(c).find('input').attr(value, colomn.attr('data-frm-' + value));
+										$(c).find('select').attr(value, colomn.attr('data-frm-' + value));
+										$(c).find('textarea').attr(value, colomn.attr('data-frm-' + value));
+									}
+								});
+
+								if(colomn.attr('data-name') == "select") {
+									var json = "[";
+									$(c).find('select').html('');
+									var j = eval('(' + colomn.attr('data-frm-multi') + ')');
+									$.each(j, function(i, value) {
+										json += "{'label':'" + value.label + "', 'value':'" + value.value + "'},";
+										$(c).find('select').append('<option value="' + value.value + '">' + value.label + '</option>');
+									});
+									json += "]";
+									//$(c).attr('data-frm-multi', json);
+								} else if(colomn.attr('data-name') == "checkbox") {
+									var json = "[";
+									$(c).find('input').remove();
+									var j = eval('(' + colomn.attr('data-frm-multi') + ')');
+									$.each(j, function(i, value) {
+										json += "{'label':'" + value.label + "', 'value':'" + value.value + "'},";
+										$(c).append('<label><input type="checkbox" name="' + colomn.attr('data-frm-name') + '[]" value="' + value.value + '">' + value.label + '</label>');
+									});
+									json += "]";
+									//$(c).attr('data-frm-multi', json);
+								} else if(colomn.attr('data-name') == "radio") {
+									var json = "[";
+									$(c).find('input').remove();
+									var j = eval('(' + colomn.attr('data-frm-multi') + ')');
+									$.each(j, function(i, value) {
+										json += "{'label':'" + value.label + "', 'value':'" + value.value + "'},";
+										$(c).append('<label><input type="radio" name="' + colomn.attr('data-frm-name') + '" value="' + value.value + '">' + value.label + '</label>');
+									});
+									json += "]";
+									//$(c).attr('data-frm-multi', json);
+								}
+							}
+							row.append(c);
+						});
+						section.append(row);
 					});
-					form.append(row);
+					form.append(section);
 				});
 				return '<form action="' + defaults.formUrl + '" method="POST">' + form.html() + '</form>';
 			}
@@ -347,61 +369,67 @@
 				var xmlDoc = $.parseXML(defaults.xml);
 				var form = "";
 				$(xmlDoc).find('formulier').each(function(){
-					$(this).find('row').each(function() {
-						var row = $(this);
-						var r = $(defaults.newRow);
-						r.find('.colomn').remove();
-						$(this).find('colomn').each(function() {
-							var colomn = $(this);
-							var field = FIELD[colomn.find('field').text()];
-							if(field  !== undefined && field.name  !== undefined) {
-								var c = $('<div class="col-md-' + colomn.find('width').text() + ' colomn"></div>');
-								c.attr('data-name', colomn.find('field').text());
+					$(this).find('section').each(function() {
+						var section = $(defaults.newSection);
+						$(this).find('row').each(function() {
+							var row = $(this);
+							var r = $(defaults.newRow);
+							r.find('.colomn').remove();
+							$(this).find('colomn').each(function() {
+								var colomn = $(this);
+								var field = FIELD[colomn.find('field').text()];
+								if(field  !== undefined && field.name  !== undefined) {
+									var c = $('<div class="col-md-' + colomn.find('width').text() + ' colomn"></div>');
+									c.attr('data-name', colomn.find('field').text());
 
-								var settings = field.options.split(",");
-								var html = field.field;
-								$.each(settings, function(index, value) {
-									html = html.replace('{' + value + '}', colomn.find(value).eq(0).text());
-									if(c.attr('data-frm-' + value) !== undefined) {
-										$(html).find('input').attr(value, colomn.find(value).eq(0).text());
-										$(html).find('select').attr(value, colomn.find(value).eq(0).text());
+									var settings = field.options.split(",");
+									var html = field.field;
+									$.each(settings, function(index, value) {
+										html = html.replace('{' + value + '}', colomn.find(value).eq(0).text());
+										if(c.attr('data-frm-' + value) !== undefined) {
+											$(html).find('input').attr(value, colomn.find(value).eq(0).text());
+											$(html).find('select').attr(value, colomn.find(value).eq(0).text());
+											$(html).find('textarea').attr(value, colomn.find(value).eq(0).text());
+										}
+										c.attr('data-frm-' + value, colomn.find(value).eq(0).text());
+									});
+									c.append(html);
+
+									if(colomn.find('field').text() == "select") {
+										var json = "[";
+										$(c).find('select').html('');
+										colomn.find('multi').each(function() {
+											json += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
+											$(c).find('select').append('<option value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</option>');
+										});
+										json += "]";
+										$(c).attr('data-frm-multi', json);
+									} else if(colomn.find('field').text() == "checkbox") {
+										var json = "[";
+										$(c).find('input').remove();
+										$(colomn).find('multi').each(function() {
+											json += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
+											$(c).append('<label><input type="checkbox" name="' + c.attr('data-frm-name') + '[]" value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</label>');
+										});
+										json += "]";
+										$(c).attr('data-frm-multi', json);
+									} else if(colomn.find('field').text() == "radio") {
+										var json = "[";
+										$(c).find('input').remove();
+										$(colomn).find('multi').each(function() {
+											json += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
+											$(c).append('<label><input type="radio" name="' + c.attr('data-frm-name') + '" value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</label>');
+										});
+										json += "]";
+										$(c).attr('data-frm-multi', json);
 									}
-									c.attr('data-frm-' + value, colomn.find(value).eq(0).text());
-								});
-								c.append(html);
-
-								if(colomn.find('field').text() == "select") {
-									var json = "[";
-									$(c).find('select').html('');
-									colomn.find('multi').each(function() {
-										json += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
-										$(c).find('select').append('<option value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</option>');
-									});
-									json += "]";
-									$(c).attr('data-frm-multi', json);
-								} else if(colomn.find('field').text() == "checkbox") {
-									var json = "[";
-									$(c).find('input').remove();
-									$(colomn).find('multi').each(function() {
-										json += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
-										$(c).append('<label><input type="checkbox" name="' + c.attr('data-frm-name') + '[]" value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</label>');
-									});
-									json += "]";
-									$(c).attr('data-frm-multi', json);
-								} else if(colomn.find('field').text() == "radio") {
-									var json = "[";
-									$(c).find('input').remove();
-									$(colomn).find('multi').each(function() {
-										json += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
-										$(c).append('<label><input type="radio" name="' + c.attr('data-frm-name') + '" value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</label>');
-									});
-									json += "]";
-									$(c).attr('data-frm-multi', json);
+									r.append(c);
 								}
-								r.append(c);
-							}
+							});
+							section.append(r);
+							//form += '<div class="row">' + r.html() + '</div>';
 						});
-						form += '<div class="row">' + r.html() + '</div>';
+						form += "<section>" + section.html() + "</section>";
 					});
 				});
 				$('.formbuilder').html(form);
@@ -421,8 +449,12 @@
 						if(value == 'required') {
 							if(frm.attr('data-frm-' + value) == 'required') {
 								$('.settings [data-settings=' + value + '] input').attr('checked', true);
+								$('.settings [data-settings=' + value + '] select').attr('checked', true);
+								$('.settings [data-settings=' + value + '] textarea').attr('checked', true);
 							} else {
 								$('.settings [data-settings=' + value + '] input').attr('checked', false);
+								$('.settings [data-settings=' + value + '] select').attr('checked', false);
+								$('.settings [data-settings=' + value + '] textarea').attr('checked', false);
 							}
 							$('.settings [data-settings=' + value + ']').show();
 						} else {
@@ -473,6 +505,8 @@
 						}
 						frm.attr('data-frm-' + settings[i], v);
 						frm.find('input').attr(settings[i], v);
+						frm.find('select').attr(settings[i], v);
+						frm.find('textarea').attr(settings[i], v);
 					}
 					frm.attr('data-name', field);
 				}
@@ -511,7 +545,18 @@
 			}
 
 			function generateFullHTML() {
-				return generateHTML();
+				var str = '<!doctype html>' +
+							'<html lang="en">' +
+							'<head>' +
+							'<meta charset="UTF-8">' +
+							'<title></title>' +
+							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">' +
+							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">' +
+							'<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>' +
+							'<script src="http://code.jquery.com/jquery-2.1.0.js"></script>' +
+							'</head>' + 
+							'<body>' + generateHTML() + '</body></html>';
+				return str;
 			}
 			function guid() {
   				function s4() {
