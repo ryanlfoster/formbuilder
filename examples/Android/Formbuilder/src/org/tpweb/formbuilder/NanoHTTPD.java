@@ -25,6 +25,7 @@ import java.util.TimeZone;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 
+import android.annotation.SuppressLint;
 import android.os.Environment;
 
 /**
@@ -417,6 +418,7 @@ public class NanoHTTPD {
 		 * Decodes the sent headers and loads the data into java Properties' key
 		 * - value pairs
 		 **/
+		@SuppressLint("DefaultLocale")
 		private void decodeHeader(BufferedReader in, Properties pre,
 				Properties parms, Properties header)
 				throws InterruptedException {

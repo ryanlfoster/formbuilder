@@ -1,6 +1,0 @@
-package org.tpweb.formbuilder;
-
-import java.util.Map;
-
-public class CouchDBProxy {
-}

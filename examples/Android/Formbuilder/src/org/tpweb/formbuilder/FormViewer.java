@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,7 +13,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class FormViewer extends Activity {
 	private WebView webview;
@@ -20,12 +23,22 @@ public class FormViewer extends Activity {
 	private CouchDBProxy proxy;
 	private Handler handler = new Handler();
 
+	@SuppressLint("SetJavaScriptEnabled")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.formviewer);
 		webview = (WebView) findViewById(R.id.webview);
+		webview.setWebChromeClient(new WebChromeClient());
+		webview.setWebViewClient(new WebViewClient());
+		webview.clearCache(true);
+		webview.clearHistory();
+		webview.getSettings().setJavaScriptEnabled(true);
+		webview.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+
+		
+		
 		couchdb = new CouchDB("formbuilder", MainActivity.server, MainActivity.serverPort, "http");
 		
 

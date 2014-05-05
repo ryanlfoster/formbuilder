@@ -7,11 +7,14 @@
  						"password", 
  						"email", 
  						"submit",
+ 						"nextbutton",
+ 						"prevbutton",
  						"select",
  						"checkbox",
  						"radio",
  						"hidden",
  						"textarea",
+ 						"number",
  					],
  					preview: false,
  					newRow: '<div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn"></div></div>',
@@ -32,12 +35,40 @@
  			var FORM = $(this).find('.formbuilder');
  			var FIELD = new Array();
 
+/*
+
+button
+checkbox		SUP
+color
+date 
+datetime 
+datetime-local 
+email 			SUP
+file
+hidden			SUP
+image
+month 
+number 			SUP
+password		SUP
+radio			SUP
+range 
+reset
+search
+submit 			SUP
+tel
+text
+time 
+url
+week
+
+*/
+
 
  			FIELD['text'] = {
  				'name':'tekst veld', 
  				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="text" name="{name}" value="{value}" class="form-control"></div>', 
  				'preview':'<input type="text" name="" value="Hier komt de tekst">',
- 				'options':'name,label,value,placeholder,required'};
+ 				'options':'name,label,value,placeholder,required,maxlength'};
 
  			FIELD['password'] = {
  				'name':'wachtwoord veld', 
@@ -55,6 +86,18 @@
  				'name':'Verzend knop', 
  				'field':'<div class="form-group"><input type="submit" value="{value}" class="btn btn-primary"></div>', 
  				'preview':'<input type="submit" value="Verzenden">',
+ 				'options':'value'};
+
+ 			FIELD['nextbutton'] = {
+ 				'name':'Volgende knop', 
+ 				'field':'<div class="form-group"><input type="submit" value="{value}" class="btn btn-primary next"></div>', 
+ 				'preview':'<input type="submit" value="Volgende">',
+ 				'options':'value'};
+
+ 			FIELD['prevbutton'] = {
+ 				'name':'Vorige knop', 
+ 				'field':'<div class="form-group"><input type="submit" value="{value}" class="btn btn-primary prev"></div>', 
+ 				'preview':'<input type="submit" value="Vorige">',
  				'options':'value'};
 
  			FIELD['select'] = {
@@ -80,11 +123,19 @@
  				'field':'<input type="hidden" name="{name}" value="{value}">', 
  				'preview':'<input type="hidden" name="{name}" value="{value}">',
  				'options':'name,value'};
+
  			FIELD['textarea'] = {
  				'name':'groot tekst veld', 
  				'field':'<div class="form-group"><label for="{name}">{label}</label><textarea name="{name}" class="form-control">{value}</textarea></div>', 
  				'preview':'<textarea name="{name}" class="form-control">Hier komt je tekst</textarea>',
  				'options':'name,label,value,placeholder,required'};
+
+
+ 			FIELD['number'] = {
+ 				'name':'nummer veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="number" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="number" name="" value="23">',
+ 				'options':'name,label,value,placeholder,required,max,min'};
 
             var options = $.extend(defaults, options);
 			var selectedIndex = 0;
@@ -248,7 +299,7 @@
 				var str = "<formulier>";
 				$('.formbuilder section').each(function(i) {
 					str += "<section>";
-					$('.formbuilder .row').each(function(i) {
+					$(this).find('.row').each(function(i) {
 						str += "<row>";
 						$(this).find('.colomn').each(function(i) {
 							var colomn = $(this);
@@ -297,7 +348,7 @@
 				form = $(form);
 				$('.formbuilder section').each(function(i) {
 					var section = $('<section><h2>{name}</h2></section>')
-					$('.formbuilder .row').each(function(i) {
+					$(this).find('.row').each(function(i) {
 						var row = $('<div class="row"></div>');
 						$(this).find('.colomn').each(function(i) {
 							var field = FIELD[$(this).attr('data-name')];
@@ -552,10 +603,11 @@
 							'<title></title>' +
 							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">' +
 							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">' +
-							'<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>' +
 							'<script src="http://code.jquery.com/jquery-2.1.0.js"></script>' +
+							'<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>' +
+							'<script src="viewer.js"></script>' +
 							'</head>' + 
-							'<body>' + generateHTML() + '</body></html>';
+							'<body><div class="container">' + generateHTML() + '</div></body></html>';
 				return str;
 			}
 			function guid() {

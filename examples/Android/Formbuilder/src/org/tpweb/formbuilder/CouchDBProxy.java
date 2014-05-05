@@ -1,7 +1,6 @@
 package org.tpweb.formbuilder;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.Map.Entry;
 

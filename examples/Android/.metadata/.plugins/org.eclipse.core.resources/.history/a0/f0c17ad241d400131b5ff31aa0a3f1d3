@@ -1,7 +1,0 @@
-package org.tpweb.formbuilder;
-
-import android.app.Activity;
-
-public class FormViewer extends Activity {
-
-}
