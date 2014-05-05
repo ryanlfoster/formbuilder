@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tjebbe's FormBuilder</title>
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+</head>
+<body>
+
+<form action="submit.html" method="POST">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+				<label for="name">Naam</label>
+				<input type="text" name="name" value="" class="form-control" label="naam" placeholder="Geef je naam" required="required"></div></div><div class="col-md-6"><div class="form-group"><label for="provincie">Provincie:</label><select name="provincie" class="form-control" label="Provincie:" required="required"><option value="1">Antwerpen</option><option value="2">Limburg</option><option value="3">Vlaams-Brabant</option><option value="4">Oost-vlaanderen</option><option value="5">West-vlaanderen</option></select></div></div></div><div class="row"><div class="col-md-12"><div class="form-group"><label for="geslacht">Geslacht</label></div><label><input type="radio" name="geslacht" value="1">Man</label><label><input type="radio" name="geslacht" value="2">Vrouw</label></div></div><div class="row"><div class="col-md-12"><div class="form-group"><input type="submit" value="Verzend" class="btn btn-primary"></div></div></div></form>
+
+</body>
+</html>

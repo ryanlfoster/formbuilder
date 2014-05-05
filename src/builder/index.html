@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tjebbe's FormBuilder</title>
+
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+	<script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="https://rawgit.com/douglascrockford/JSON-js/master/json2.js"></script>
+
+	<!--<script src="http://code.jquery.com/jquery-1.11.0.js"></script>-->
+
+
+	<script src="script.js"></script>
+	<script>
+		$(function() {
+			var loadForm = "";
+
+			loadForm = "<formulier><row><colomn><width>6</width><field>text</field><name>name</name><label>Naam</label><value></value><placeholder>Geef je naam</placeholder><required>required</required></colomn><colomn><width>6</width><field>select</field><name>provincie</name><label>Provincie:</label><required>required</required><multi><value>1</value><label>Antwerpen</label></multi><multi><value>2</value><label>Limburg</label></multi><multi><value>3</value><label>Vlaams-Brabant</label></multi><multi><value>4</value><label>Oost-vlaanderen</label></multi><multi><value>5</value><label>West-vlaanderen</label></multi></colomn></row><row><colomn><width>12</width><field>radio</field><name>geslacht</name><label>Geslacht</label><multi><value>1</value><label>Man</label></multi><multi><value>2</value><label>Vrouw</label></multi></colomn></row><row><colomn><width>12</width><field>submit</field><value>Verzend</value></colomn></row></formulier>";
+
+			$('.formuliermaker').FormBuilder({
+				INPUT_TYPES:["text", "password", "email", "submit", "select", "checkbox", "radio", "hidden"],
+				xml: loadForm,
+				database: {
+					'database':'couchdbproxy', 
+					'dbname':'formbuilder',
+					'username':'', 
+					'password':'', 
+					'server':'http://localhost:8080/formb/'},
+				saveTo: 'app'
+			});
+		});
+	</script>
+	<style>
+
+		.formbuilder .row {
+			border: 1px solid #DDD;
+		}
+		.colomn {
+			border: 1px solid #EEE;
+			min-height: 50px;
+		}
+
+
+		.active {
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 formuliermaker">
+				<h2>Elementen</h2>
+				<ul class="input"></ul>
+				<h2>Instellingen</h2>
+				<div class="settings" style="display: none;">
+					<table class="table">
+						<tr data-settings="name">
+							<td>Name</td>
+							<td><input type="text" name="name" value=""></td>
+						</tr>
+						<tr data-settings="label">
+							<td>Label</td>
+							<td><input type="text" name="label" value=""></td>
+						</tr>
+						<tr data-settings="value">
+							<td>Value</td>
+							<td><input type="text" name="value" value=""></td>
+						</tr>
+						<tr data-settings="placeholder">
+							<td>Placeholder</td>
+							<td><input type="text" name="placeholder" value=""></td>
+						</tr>
+						<tr data-settings="required">
+							<td>Required</td>
+							<td><input type="checkbox" name="required" value="true"></td>
+						</tr>
+					</table>
+					<div class="multi">
+						<table class="table">
+							<tr>
+								<td>Label</td>
+								<td>Value</td>
+							</tr>
+						</table>
+						<input type="submit" value="Voeg rij toe" class="btn btn-primary"><br><br>
+					</div>
+
+					<input type="submit" value="Opslaan" class="btn btn-primary">
+				</div>
+				<h2>Exporteer</h2>
+				<input type="submit" value="Genereer XML" class="btn btn-secondary xml">
+				<input type="submit" value="Genereer HTML" class="btn btn-primary html">
+				<h2>Import</h2>
+				<textarea name="importxml" placeholder="XML File"></textarea><br>
+				<input type="submit" value="Genereer HTML" class="btn btn-primary importxml">
+				<h2>Opslaan</h2>
+				<input type="submit" value="Save" class="btn btn-secondary save">
+				<input type="submit" value="Publish" class="btn btn-primary publish">
+			</div>
+			<div class="col-md-9">
+				<h2>Formulier</h2> <a href="javascript:void();" class="addRow">Add row</a><br>
+
+				<div class="formbuilder">
+
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
