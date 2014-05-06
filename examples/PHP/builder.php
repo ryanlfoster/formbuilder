@@ -13,10 +13,12 @@
 
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-	<script src="http://code.jquery.com/jquery-1.11.0.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.0.js"></script>
 	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	<script src="https://rawgit.com/douglascrockford/JSON-js/master/json2.js"></script>
-
+	<!--
+	<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/builder.min.js"></script>
+	-->
 	<script src="script.js?v=5"></script>
 	<script>
 		$(function() {

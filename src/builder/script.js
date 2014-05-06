@@ -6,6 +6,7 @@
 						"text", 
  						"password", 
  						"email", 
+ 						"url", 
  						"submit",
  						"nextbutton",
  						"prevbutton",
@@ -15,6 +16,10 @@
  						"hidden",
  						"textarea",
  						"number",
+ 						"date",
+ 						"datetime",
+ 						"time",
+ 						"range",
  					],
  					preview: false,
  					newRow: '<div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn"></div></div>',
@@ -36,7 +41,7 @@
 							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">' +
 							'<script src="https://code.jquery.com/jquery-2.1.0.js"></script>' +
 							'<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>' +
-							'<script src="https://rawgit.com/TPWeb/formbuilder/master/src/viewer/viewer.js"></script>' +
+							'<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/viewer.min.js"></script>' +
 							'</head>' + 
 							'<body><div class="container">{form}</div></body></html>',
  					basicHTMLUrl:'',
@@ -50,8 +55,8 @@
 button
 checkbox		SUP
 color
-date 
-datetime 
+date 			SUP
+datetime 		SUP
 datetime-local 
 email 			SUP
 file
@@ -61,14 +66,14 @@ month
 number 			SUP
 password		SUP
 radio			SUP
-range 
+range 			SUP
 reset
 search
 submit 			SUP
 tel
-text
-time 
-url
+text 			SUP
+time 			SUP
+url 			SUP
 week
 
 */
@@ -90,6 +95,12 @@ week
  				'name':'E-mail veld', 
  				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="email" name="{name}" value="{value}" class="form-control"></div>', 
  				'preview':'<input type="email" name="" value="example@example.com">',
+ 				'options':'name,label,value,placeholder,required'};
+
+ 			FIELD['url'] = {
+ 				'name':'url veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="url" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="email" name="" value="http://www.example.com">',
  				'options':'name,label,value,placeholder,required'};
 
  			FIELD['submit'] = {
@@ -146,6 +157,30 @@ week
  				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="number" name="{name}" value="{value}" class="form-control"></div>', 
  				'preview':'<input type="number" name="" value="23">',
  				'options':'name,label,value,placeholder,required,max,min'};
+
+ 			FIELD['date'] = {
+ 				'name':'datum veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="date" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="date" name="" value="2014-01-01">',
+ 				'options':'name,label,value,placeholder,required'};
+
+ 			FIELD['datetime'] = {
+ 				'name':'datum en tijd veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="datetime" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="date" name="" value="2014-01-01 12:00:00">',
+ 				'options':'name,label,value,placeholder,required'};
+
+ 			FIELD['time'] = {
+ 				'name':'tijd veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="time" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="time" name="" value="12:00:00">',
+ 				'options':'name,label,value,placeholder,required'};
+
+ 			FIELD['range'] = {
+ 				'name':'range veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="range" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="range" name="" value="10" min="0" max="30">',
+ 				'options':'name,label,value,placeholder,required,min,max'};
 
             var options = $.extend(defaults, options);
 			var selectedIndex = 0;
