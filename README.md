@@ -444,10 +444,18 @@ The form builder is completely built in HTML5 and JQuery and can be easily integ
 		<td>V</td>
 		<td>V</td>
 		<td>V</td>
+
+		<td>O</td>
+		<td>O</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		
 		<td>V</td>
 	</tr>
 	<tr>
 		<td>select</td>
+		<td>V</td>
 		<td>V</td>
 		<td>V</td>
 		<td>V</td>
