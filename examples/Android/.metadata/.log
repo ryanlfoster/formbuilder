@@ -471,3 +471,13 @@ Binding(CTRL+SHIFT+ARROW_LEFT,
 		,,true),null),
 	org.eclipse.ui.defaultAcceleratorConfiguration,
 	org.eclipse.wst.sse.ui.structuredTextEditorScope,,cocoa,system)
+!SESSION 2014-05-06 14:36:31.324 -----------------------------------------------
+eclipse.buildId=v22.3.0-887826
+java.version=1.6.0_65
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=nl_NL
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product -product com.android.ide.eclipse.adt.package.product -keyring /Users/tjebbelievens/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product com.android.ide.eclipse.adt.package.product -data /Users/tjebbelievens/Google Drive/GIT/formbuilder/formbuilder/examples/Android -product com.android.ide.eclipse.adt.package.product -keyring /Users/tjebbelievens/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2014-05-06 14:36:40.396
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
