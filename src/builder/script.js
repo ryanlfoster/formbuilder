@@ -34,6 +34,7 @@
  						"h2",
  						"h3",
  						"h4",
+ 						"p",
  					],
  					preview: false,
  					newRow: '<div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn"></div></div>',
@@ -217,6 +218,12 @@
  				'name':'Heading 4', 
  				'field':'<h4>{label}</h4>', 
  				'preview':'<h4>Heading 4</h4>',
+ 				'options':'label'};
+
+ 			FIELD['p'] = {
+ 				'name':'Paragraph', 
+ 				'field':'<p>{label}</p>', 
+ 				'preview':'<p>Hier komt je tekst</p>',
  				'options':'label'};
 
             var options = $.extend(defaults, options);
@@ -678,18 +685,16 @@
 			}
 
 			function generateFullHTML() {
-				var str = '<!doctype html>' +
-							'<html lang="en">' +
-							'<head>' +
-							'<meta charset="UTF-8">' +
-							'<title></title>' +
-							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">' +
-							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">' +
-							'<script src="http://code.jquery.com/jquery-2.1.0.js"></script>' +
-							'<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>' +
-							'<script src="viewer.js"></script>' +
-							'</head>' + 
-							'<body><div class="container">' + generateHTML() + '</div></body></html>';
+				var str = "";
+				if(defaults.basicHTMLUrl.length == 0) {
+					var split = defaults.basicHTML.split("{form}");
+					str = split[0] + generateHTML() + split[1];
+				} else {
+					$.get(defaults.basicHTMLUrl, function(value) {
+						var split = value.split("{form}");
+						str = split[0] + generateHTML() + split[1];
+					});
+				}
 				return str;
 			}
 			function guid() {
