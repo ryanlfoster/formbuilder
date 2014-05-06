@@ -1,4 +1,14 @@
 <?php
+/************************************************
+ *												*
+ *		Project: formbuilder 					*
+ *		Created by: Tjebbe Lievens				*
+ *		https://github.com/TPWeb/formbuilder	*
+ *												*
+ *		PHP Viewer 								*
+ *												*
+ ************************************************/
+
 if(isset($_GET['id'])) {
 $url = "http://127.0.0.1:5984/formbuilder/" . $_GET['id'];
 $curl = curl_init();

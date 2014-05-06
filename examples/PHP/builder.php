@@ -1,4 +1,16 @@
 <?php
+
+/************************************************
+ *												*
+ *		Project: formbuilder 					*
+ *		Created by: Tjebbe Lievens				*
+ *		https://github.com/TPWeb/formbuilder	*
+ *												*
+ *		PHP Builder 							*
+ *												*
+ ************************************************/
+
+
 	$couchdb_server = "http://127.0.0.1:5984/";
 	$couchdb_formbuilderdb = "formbuilder";
 	$couchdb_formviewerdb = "formdata";
@@ -19,7 +31,7 @@
 	<!--
 	<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/builder.min.js"></script>
 	-->
-	<script src="script.js?v=6"></script>
+	<script src="script.js?v=7"></script>
 	<script>
 		$(function() {
 			var loadForm = "";
