@@ -39,6 +39,7 @@
  					preview: false,
  					newRow: '<div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn"></div></div>',
  					newSection: '<section><a href="javascript:void();" class="addRow">add row</a><br><div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn active" data-frm-label="label" data-name="h1"><h1>label</h1></div></div></section>',
+ 					existSection: '<section><a href="javascript:void();" class="addRow">add row</a><br></section>',
  					formUrl: 'submit.html',
  					xml: '',
  					database: {
@@ -510,7 +511,7 @@
 				var form = "";
 				$(xmlDoc).find('formulier').each(function(){
 					$(this).find('section').each(function() {
-						var section = $(defaults.newSection);
+						var section = $(defaults.existSection);
 						$(this).find('row').each(function() {
 							var row = $(this);
 							var r = $(defaults.newRow);
