@@ -17,13 +17,13 @@ The form builder is completely built in HTML5 and JQuery and can be easily integ
 	</tr>
 	<tr>
 		<td>Button</td>
-		<td>V</td>
-		<td>V</td>
-		<td>V</td>
-		<td>V</td>
-		<td>V</td>
-		<td>V</td>
-		<td>X</td>
+		<td style="background-color:#0F0;">V</td>
+		<td style="background-color:#0F0;">V</td>
+		<td style="background-color:#0F0;">V</td>
+		<td style="background-color:#0F0;">V</td>
+		<td style="background-color:#0F0;">V</td>
+		<td style="background-color:#0F0;">V</td>
+		<td style="background-color:#F00;">X</td>
 	</tr>
 	<tr>
 		<td>checkbox</td>
