@@ -11,12 +11,12 @@
  ************************************************/
 
 
-	$couchdb_server = "http://127.0.0.1:5984/";
-	$couchdb_formbuilderdb = "formbuilder";
-	$couchdb_formviewerdb = "formdata";
-	$couchdb_proxy = "http://localhost:8080/formb/";
-
+$couchdb_server = "http://127.0.0.1:5984/";
+$couchdb_formbuilderdb = "formbuilder";
+$couchdb_formviewerdb = "formdata";
+$couchdb_proxy = "http://localhost:8080/formb/";
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -28,10 +28,12 @@
 	<script src="https://code.jquery.com/jquery-1.11.0.js"></script>
 	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	<script src="https://rawgit.com/douglascrockford/JSON-js/master/json2.js"></script>
-	<!--
+	
 	<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/builder.min.js"></script>
-	-->
+	
+	<!--
 	<script src="script.js?v=7"></script>
+	-->
 	<script>
 		$(function() {
 			var loadForm = "";
@@ -68,9 +70,16 @@ if(isset($_GET['id'])) {
 		});
 	</script>
 	<style>
+		.formbuilder section {
+			position: relative;
+			border-bottom: 2px solid #DDD;
+			padding-bottom: 5px;
+			margin-bottom: 20px;
+		}
 
 		.formbuilder .row {
 			border: 1px solid #DDD;
+			position: relative;
 		}
 		.colomn {
 			border: 1px solid #EEE;
@@ -149,8 +158,7 @@ if(isset($_GET['id'])) {
 			</div>
 			<div class="col-md-9">
 				<h2>Formulier</h2>
-
-					 <a href="javascript:void();" class="addSection">Add section</a><br>
+				<a href="javascript:void();" class="addSection">Add section</a><br>
 				<div class="formbuilder">
 				</div>
 			</div>

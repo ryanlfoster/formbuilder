@@ -48,7 +48,7 @@
  						'username':'', 
  						'password':'', 
  						'server':'http://127.0.0.1:5984'},
- 					saveTo:'',
+ 					saveTo:'',	/* NOT USED??? */
  					formId:'',
  					formRev:'',
  					basicHTML:'<!doctype html><html lang="en"><head>' +
@@ -385,6 +385,67 @@
 				push_to_server(1);
 			});
 
+
+			/* REMOVE */
+			$('.formbuilder').on('mouseenter', '.colomn', function() {
+				$(this).append('<div class="delete" style="position: absolute; right: 0; top: 0;"><a href="javascript:void(0);" class="deleteColomn">X</a></div>');
+			});
+			$('.formbuilder').on('mouseleave', '.colomn', function() {
+				$(this).find('div.delete').remove();
+			});
+
+			$('.formbuilder').on('click', '.deleteColomn', function(e) {
+				e.preventDefault();
+				tCol = $(this).parent().parent();
+
+				var aantal = tCol.parent().find('div.colomn').length;
+				aantal--;
+				if(aantal > 0) {
+					var c = "col-md-" + Math.floor(12/aantal);
+					var colomn = tCol.parent().find('div.colomn');
+					colomn.removeClass('col-md-1');
+					colomn.removeClass('col-md-2');
+					colomn.removeClass('col-md-3');
+					colomn.removeClass('col-md-4');
+					colomn.removeClass('col-md-5');
+					colomn.removeClass('col-md-6');
+					colomn.removeClass('col-md-7');
+					colomn.removeClass('col-md-8');
+					colomn.removeClass('col-md-9');
+					colomn.removeClass('col-md-10');
+					colomn.removeClass('col-md-11');
+					colomn.removeClass('col-md-12');
+					colomn.addClass(c);
+				}
+				tCol.remove();
+			});
+
+			$('.formbuilder').on('mouseenter', '.row', function() {
+				$(this).append('<div class="delete" style="position: absolute; right: 0; top: 0;"><a href="javascript:void(0);" class="deleteRow">X</a></div>');
+			});
+			$('.formbuilder').on('mouseleave', '.row', function() {
+				$(this).find('div.delete').remove();
+			});
+
+			$('.formbuilder').on('click', '.deleteRow', function(e) {
+				e.preventDefault();
+				$(this).parent().parent().remove();
+			});
+
+			$('.formbuilder').on('mouseenter', 'section', function() {
+				$(this).append('<div class="delete" style="position: absolute; right: 0; top: 0;"><a href="javascript:void(0);" class="deleteSection">X</a></div>');
+			});
+			$('.formbuilder').on('mouseleave', 'section', function() {
+				$(this).find('div.delete').remove();
+			});
+
+			$('.formbuilder').on('click', '.deleteSection', function(e) {
+				e.preventDefault();
+				$(this).parent().parent().remove();
+			});
+
+
+
 			function generateXML() {
 				var str = "<formulier>";
 				$('.formbuilder section').each(function(i) {
@@ -698,6 +759,7 @@
 				}
 				return str;
 			}
+			
 			function guid() {
   				function s4() {
     				return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
