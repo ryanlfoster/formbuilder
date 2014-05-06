@@ -3,27 +3,41 @@
         FormBuilder: function(options) {
  			var defaults = {
  					INPUT_TYPES: [
-						"text", 
- 						"password", 
- 						"email", 
- 						"url", 
  						"submit",
  						"nextbutton",
  						"prevbutton",
+ 						"hidden",
+
+						"text",
+ 						"textarea",
+
+ 						"password", 
+ 						"email", 
+ 						"url", 
+
  						"select",
  						"checkbox",
  						"radio",
- 						"hidden",
- 						"textarea",
+
  						"number",
+ 						"range",
+ 						"tel",
+ 						"color",
+
  						"date",
  						"datetime",
  						"time",
- 						"range",
+ 						"month",
+ 						"week",
+
+ 						"h1",
+ 						"h2",
+ 						"h3",
+ 						"h4",
  					],
  					preview: false,
  					newRow: '<div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn"></div></div>',
- 					newSection: '<section><h2>{name}</h2><a href="javascript:void();" class="addRow">add row</a><br></section>',
+ 					newSection: '<section><a href="javascript:void();" class="addRow">add row</a><br><div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn active" data-frm-label="label" data-name="h1"><h1>label</h1></div></div></section>',
  					formUrl: 'submit.html',
  					xml: '',
  					database: {
@@ -50,33 +64,6 @@
  			var FORM = $(this).find('.formbuilder');
  			var FIELD = new Array();
 
-/*
-
-button
-checkbox		SUP
-color
-date 			SUP
-datetime 		SUP
-datetime-local 
-email 			SUP
-file
-hidden			SUP
-image
-month 
-number 			SUP
-password		SUP
-radio			SUP
-range 			SUP
-reset
-search
-submit 			SUP
-tel
-text 			SUP
-time 			SUP
-url 			SUP
-week
-
-*/
 
 
  			FIELD['text'] = {
@@ -181,6 +168,56 @@ week
  				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="range" name="{name}" value="{value}" class="form-control"></div>', 
  				'preview':'<input type="range" name="" value="10" min="0" max="30">',
  				'options':'name,label,value,placeholder,required,min,max'};
+
+ 			FIELD['color'] = {
+ 				'name':'kleur veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="color" name="{name}" class="form-control"></div>', 
+ 				'preview':'<input type="color" name="">',
+ 				'options':'name,label,placeholder,required'};
+
+ 			FIELD['month'] = {
+ 				'name':'maand veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="month" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="color" name="">',
+ 				'options':'name,label,value,placeholder,required'};
+
+ 			FIELD['week'] = {
+ 				'name':'week veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="week" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="week" name="" value="">',
+ 				'options':'name,label,value,placeholder,required'};
+
+ 			FIELD['tel'] = {
+ 				'name':'telefoon veld', 
+ 				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="tel" name="{name}" value="{value}" class="form-control"></div>', 
+ 				'preview':'<input type="tel" name="" value="">',
+ 				'options':'name,label,value,placeholder,required'};
+
+
+
+ 			FIELD['h1'] = {
+ 				'name':'Heading 1', 
+ 				'field':'<h1>{label}</h1>', 
+ 				'preview':'<h1>Heading 1</h1>',
+ 				'options':'label'};
+
+ 			FIELD['h2'] = {
+ 				'name':'Heading 2', 
+ 				'field':'<h2>{label}</h2>', 
+ 				'preview':'<h2>Heading 2</h2>',
+ 				'options':'label'};
+
+ 			FIELD['h3'] = {
+ 				'name':'Heading 3', 
+ 				'field':'<h3>{label}</h3>', 
+ 				'preview':'<h3>Heading 3</h3>',
+ 				'options':'label'};
+
+ 			FIELD['h4'] = {
+ 				'name':'Heading 4', 
+ 				'field':'<h4>{label}</h4>', 
+ 				'preview':'<h4>Heading 4</h4>',
+ 				'options':'label'};
 
             var options = $.extend(defaults, options);
 			var selectedIndex = 0;

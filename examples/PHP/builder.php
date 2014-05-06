@@ -19,7 +19,7 @@
 	<!--
 	<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/builder.min.js"></script>
 	-->
-	<script src="script.js?v=5"></script>
+	<script src="script.js?v=6"></script>
 	<script>
 		$(function() {
 			var loadForm = "";
