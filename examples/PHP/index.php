@@ -106,6 +106,7 @@ else {
 
 	$docs = json_decode($result, true);
 	$i = 1;
+	echo "<a href='builder.php'>New form</a><br>";
 	echo "<table>";
 	foreach($docs['rows'] as $row) {
 		echo "<tr><td>Formulier " . $i++ . "</td><td><a href='builder.php?id=" . $row['id'] . "'>Build</a></td><td><a href='viewer.php?id=" . $row['id'] . "'>View</a></td></tr>";

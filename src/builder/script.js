@@ -30,6 +30,16 @@
  					saveTo:'',
  					formId:'',
  					formRev:'',
+ 					basicHTML:'<!doctype html><html lang="en"><head>' +
+							'<meta charset="UTF-8"><title></title>' +
+							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">' +
+							'<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">' +
+							'<script src="https://code.jquery.com/jquery-2.1.0.js"></script>' +
+							'<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>' +
+							'<script src="https://rawgit.com/TPWeb/formbuilder/master/src/viewer/viewer.js"></script>' +
+							'</head>' + 
+							'<body><div class="container">{form}</div></body></html>',
+ 					basicHTMLUrl:'',
  			};
  			var CONTAINER = $(this);
  			var FORM = $(this).find('.formbuilder');
