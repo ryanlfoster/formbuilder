@@ -498,7 +498,7 @@
 				var form = '<form></form>';
 				form = $(form);
 				$('.formbuilder section').each(function(i) {
-					var section = $('<section><h2>{name}</h2></section>')
+					var section = $('<section></section>')
 					$(this).find('.row').each(function(i) {
 						var row = $('<div class="row"></div>');
 						$(this).find('.colomn').each(function(i) {

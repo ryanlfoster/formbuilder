@@ -2,20 +2,109 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Tjebbe's FormBuilder</title>
+	<title></title>
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+	<script src="https://code.jquery.com/jquery-2.1.0.js"></script>
 	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-	<script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+	<script src="viewer.js?v=1"></script>
 </head>
 <body>
-
-<form action="submit.html" method="POST">
-	<div class="row">
-		<div class="col-md-6">
-			<div class="form-group">
-				<label for="name">Naam</label>
-				<input type="text" name="name" value="" class="form-control" label="naam" placeholder="Geef je naam" required="required"></div></div><div class="col-md-6"><div class="form-group"><label for="provincie">Provincie:</label><select name="provincie" class="form-control" label="Provincie:" required="required"><option value="1">Antwerpen</option><option value="2">Limburg</option><option value="3">Vlaams-Brabant</option><option value="4">Oost-vlaanderen</option><option value="5">West-vlaanderen</option></select></div></div></div><div class="row"><div class="col-md-12"><div class="form-group"><label for="geslacht">Geslacht</label></div><label><input type="radio" name="geslacht" value="1">Man</label><label><input type="radio" name="geslacht" value="2">Vrouw</label></div></div><div class="row"><div class="col-md-12"><div class="form-group"><input type="submit" value="Verzend" class="btn btn-primary"></div></div></div></form>
-
+	<div class="container">
+		<form action="index.php?action=createdocument&dbname=formdata" method="POST">
+			<section>
+				<h2>{name}</h2>
+				<div class="row">
+					<div class="col-md-12">
+						<h1>Stap 1</h1>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="birthyear">Geboortejaar</label>
+							<input min="1900" max="2014" required="required" placeholder="Je geboortejaar yyyy" label="Geboortejaar" name="birthyear" value="" class="form-control" type="number">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="provincie">De provincie waar je woont:</label>
+							<select required="required" label="De provincie waar je woont:" name="provincie" class="form-control">
+								<option value="1">Antwerpen</option>
+								<option value="2">Limburg</option>
+								<option value="3">Oost-Vlaanderen</option>
+								<option value="4">Vlaams-Brabant</option>
+								<option value="5">West-Vlaanderen</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="sex">Je geslacht?</label>
+							<select required="required" label="Je geslacht?" name="sex" class="form-control">
+								<option value="1">Man</option>
+								<option value="2">Vrouw</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<input value="Volgende" class="btn btn-primary next" type="submit">
+						</div>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h2>{name}</h2>
+				<div class="row">
+					<div class="col-md-12">
+						<h1>Stap 2</h1>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="gevoel">Je gevoel</label>
+						</div>
+						<label>
+							<input name="gevoel" value="1" type="radio">Zeer slecht
+						</label>
+						<label>
+							<input name="gevoel" value="2" type="radio">Slecht
+						</label>
+						<label><input name="gevoel" value="3" type="radio">Matig</label>
+						<label><input name="gevoel" value="4" type="radio">Goed</label>
+						<label><input name="gevoel" value="5" type="radio">Zeer goed</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label for="worktime">Werktijd</label>
+							<input min="0" max="24" required="required" placeholder="Je gewerkte tijd in uren" label="Werktijd" name="worktime" value="8" class="form-control" type="number">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+							<input value="Vorige" class="btn btn-primary prev" type="submit">
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+							<input value="Verzend" class="btn btn-primary" type="submit">
+						</div>
+					</div>
+				</div>
+			</section>
+		</form>
+	</div>
 </body>
 </html>
