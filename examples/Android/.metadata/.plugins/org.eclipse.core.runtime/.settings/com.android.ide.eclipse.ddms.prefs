@@ -1,3 +1,5 @@
+ddms.logcat.auotmonitor.level=assert
+ddms.logcat.automonitor.userprompt=true
 eclipse.preferences.version=1
 logcat.view.colsize.Application=135
 logcat.view.colsize.Level=18

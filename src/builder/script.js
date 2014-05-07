@@ -141,7 +141,6 @@
  				'preview':'<textarea name="{name}" class="form-control">Hier komt je tekst</textarea>',
  				'options':'name,label,value,placeholder,required'};
 
-
  			FIELD['number'] = {
  				'name':'nummer veld', 
  				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="number" name="{name}" value="{value}" class="form-control"></div>', 
@@ -195,8 +194,6 @@
  				'field':'<div class="form-group"><label for="{name}">{label}</label><input type="tel" name="{name}" value="{value}" class="form-control"></div>', 
  				'preview':'<input type="tel" name="" value="">',
  				'options':'name,label,value,placeholder,required'};
-
-
 
  			FIELD['h1'] = {
  				'name':'Heading 1', 
