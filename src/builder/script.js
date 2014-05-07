@@ -776,7 +776,7 @@
 					}
 					var db = $.couch.db(defaults.database.dbname);
 					var data = {_id:defaults.formId, 'html':generateFullHTML(), 'xml':generateXML(), 'publish': publish};
-					if(defaults.formRev.length > 0) {
+					if(defaults.formRev != null && defaults.formRev !== undefined && defaults.formRev.length > 0) {
 						data._rev = defaults.formRev;
 					}
 					db.saveDoc (data, {
@@ -788,7 +788,9 @@
     							alert("Formulier is opgeslagen");
     						}
     					},
-    					error: function () { alert ("Kan formulier niet opslaan."); }
+    					error: function () { 
+    						alert ("Kan formulier niet opslaan."); 
+    					}
 					});
 				} else if(defaults.database.database == "couchdbproxy") {
 					$.ajax({
