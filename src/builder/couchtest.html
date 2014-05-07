@@ -13,6 +13,13 @@
 
 	<script type="text/javascript">
 	$(function() {
+		$.couch.urlPrefix = "http://127.0.0.1:5984";
+		/*
+			$.couch.login({
+    			name: 'name',
+    			password: 'secret'
+			});
+		*/
 		var db = $.couch.db("app1");
 		var data = { type:'tick', tick: 'AAPL', name: 'Apple' };
 		db.saveDoc (data, {

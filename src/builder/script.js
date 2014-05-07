@@ -767,36 +767,28 @@
 
 			function push_to_server(publish) {
 				if(defaults.database.database == "couchdb") {
-					$.ajax({
-    					url: defaults.database.server + '/' + defaults.database.dbname,
-    					type: "PUT",
-    					//crossDomain: true,
-    					success: function(res) {
-    						var r = res;
-	    					if(r.ok == true || r.error == "file_exists" || r.db_name == defaults.database.dbname) {
-	    						alert('Momenteel is deze functie niet beschikbaar');
-	    						/*str = JSON.stringify({html: generateFullHTML(), xml: generateXML(), publish: 0});
-								$.ajax({
-    								url: defaults.database.server + '/' + defaults.database.dbname + '/' + defaults.formId + '?callback=?',
-    								type: "POST",
-    								data: str,
-    								success: function(res) {
-    									alert('Opgeslagen!');
-    								},
-    								error: function(jqXHR, textStatus, errorThrown) {
-    									alert("Kan formulier niet opslaan.");
-    								},
-    								dataType: 'jsonp',
-    								contentType: "application/json; charset=utf-8",
-								});*/
-        					} else {
-        						alert('Fout tijdens aanmaken database');
-        					}
+					$.couch.urlPrefix = defaults.database.server;
+					if(defaults.database.username.length > 0) {
+						$.couch.login({
+    						name: defaults.database.username,
+    						password: defaults.database.password
+						});
+					}
+					var db = $.couch.db(defaults.database.dbname);
+					var data = {_id:defaults.formId, 'html':generateFullHTML(), 'xml':generateXML(), 'publish': publish};
+					if(defaults.formRev.length > 0) {
+						data._rev = defaults.formRev;
+					}
+					db.saveDoc (data, {
+    					success: function (d) { 
+    						defaults.formRev = d._rev;
+    						if(publish == 1) {
+    							alert("Formulier is gepubliseerd!");
+    						} else {
+    							alert("Formulier is opgeslagen");
+    						}
     					},
-    					error: function(jqXHR, textStatus, errorThrown) {
-    						alert("Kan geen connectie maken met server.");
-    					},
-    					//dataType: 'json'
+    					error: function () { alert ("Kan formulier niet opslaan."); }
 					});
 				} else if(defaults.database.database == "couchdbproxy") {
 					$.ajax({
@@ -819,7 +811,11 @@
     								success: function(res) {
     									var r = eval('(' + res + ')');
     									if(r.id == defaults.formId) {
-    										alert("Formulier opgeslagen.");
+    										if(publish == 1) {
+    											alert("Formulier is gepubliseerd!");
+    										} else {
+    											alert("Formulier is opgeslagen");
+    										}
     									} else {
     										alert("Fout tijdens opslagen van formulier.");
     									}
