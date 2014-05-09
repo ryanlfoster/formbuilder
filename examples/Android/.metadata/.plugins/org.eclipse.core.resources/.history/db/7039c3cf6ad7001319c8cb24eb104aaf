@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long _id) {
 					String id = (String) contentList.get(position).get("id");
-					Intent i = new Intent(getApplicationContext(), FormViewer2.class);
+					Intent i = new Intent(getApplicationContext(), FormViewer.class);
 					i.putExtra("id", id);
 					startActivity(i);
 				}

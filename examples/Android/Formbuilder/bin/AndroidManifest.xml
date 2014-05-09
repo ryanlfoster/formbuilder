@@ -26,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name="org.tpweb.formbuilder.FormViewer"></activity>
+        <activity android:name="org.tpweb.formbuilder.FormViewer2"></activity>
         <activity android:name="org.tpweb.formbuilder.SettingsActivity"></activity>
     </application>
 
