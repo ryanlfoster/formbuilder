@@ -42,12 +42,20 @@
  					existSection: '<section><a href="javascript:void();" class="addRow">add row</a><br></section>',
  					formUrl: 'submit.html',
  					xml: '',
+ 					
  					database: {
  						'database':'couchdb',
 						'dbname':'formbuilder', 
  						'username':'', 
  						'password':'', 
  						'server':'http://127.0.0.1:5984'},
+ 						/*
+ 					database: {
+ 						'database':'couchbase',
+						'dbname':'sync', 
+ 						'username':'', 
+ 						'password':'', 
+ 						'server':'http://sync:sync123@127.0.0.1:4984'}, */
  					saveTo:'',	/* NOT USED??? */
  					formId:'',
  					formRev:'',
@@ -833,6 +841,51 @@
     					error: function(jqXHR, textStatus, errorThrown) {
     						alert("Kan geen connectie maken met server.");
     					}
+					});
+				} else if(defaults.database.database == "couchbase") {
+					//http://docs.couchbase.com/couchbase-lite/cbl-api/index.html#get-db
+					/*
+					BUGGY CORS
+					https://github.com/couchbase/sync_gateway/issues/115
+
+					*/
+					$.ajax({
+    					url: defaults.database.server + '/' + defaults.database.dbname,
+    					type: "GET",
+    					crossDomain: true,
+    					success: function(res) {
+    						var r = eval('(' + res + ')');
+	    					if(defaults.formRev.length == 0) {
+	    						str = {'publish':publish, 'xml':generateXML(), 'html':generateFullHTML()};
+	    					} else {
+	    						str = {'publish':publish, '_rev':defaults.formRev, 'xml':generateXML(), 'html':generateFullHTML()};
+	    					}
+							$.ajax({
+    							url: defaults.database.server + '/' + defaults.database.dbname + '/' + defaults.formId,
+    							type: "PUT",
+    							data: str,
+    							success: function(res) {
+    								var r = eval('(' + res + ')');
+    								if(r.id == defaults.formId && r.ok) {
+    									if(publish == 1) {
+    										alert("Formulier is gepubliseerd!");
+    									} else {
+    										alert("Formulier is opgeslagen");
+    									}
+    								} else {
+    									alert("Fout tijdens opslagen van formulier.");
+    								}
+    							},
+    							error: function(jqXHR, textStatus, errorThrown) {
+    								alert("Kan formulier niet opslaan.");
+    							},
+    							dataType:'json'
+							});
+    					},
+    					error: function(jqXHR, textStatus, errorThrown) {
+    						alert("Kan geen connectie maken met server.");
+    					},
+    					dataType:'json'
 					});
 				} else {
 					alert('No database connected!');
