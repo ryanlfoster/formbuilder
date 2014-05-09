@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tjebbe's FormBuilder</title>
+	 <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"> 
+	<script src="http://code.jquery.com/jquery-2.1.0.js"></script>
+	<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/json2.js"></script>
+	<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/couchdb.js" type="text/javascript"></script>
+	<script src="https://rawgit.com/TPWeb/formbuilder/master/libs/viewer2.min.js"></script>
+	<script>
+		$(function() {
+			var fid = "506e212f-b23c-35fc-8a2e-2c7b1e22e549";
+			$('.formuliermaker').FormViewer({databaseData: {
+ 						'database':'couchdb',
+						'dbname':'formdata', 
+ 						'username':'', 
+ 						'password':'', 
+ 						'server':'http://127.0.0.1:5984'},
+ 					database: {
+ 						'database':'couchdb',
+						'dbname':'formbuilder', 
+ 						'username':'', 
+ 						'password':'', 
+ 						'server':'http://127.0.0.1:5984'},
+ 					formId:fid});
+		});
+	</script>
+	<style>
+		.formbuilder .row {
+			border: 1px solid #DDD;
+		}
+		.colomn {
+			border: 1px solid #EEE;
+			min-height: 50px;
+		}
+
+
+		.active {
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+
+</body>
+</html>
