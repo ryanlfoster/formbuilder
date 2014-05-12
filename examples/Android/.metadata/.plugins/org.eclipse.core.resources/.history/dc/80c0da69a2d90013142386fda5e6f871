@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
@@ -68,7 +69,11 @@ public class MainActivity extends Activity {
 		}
 	}
 	
+
+    
     private class LoadData extends AsyncTask<Void, Void, Object> {
+
+
 		@Override
 		protected Object doInBackground(Void... arg0) {
 			if(couchdb.createDatabase("formbuilder")) {
@@ -104,11 +109,12 @@ public class MainActivity extends Activity {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long _id) {
 					String id = (String) contentList.get(position).get("id");
-					Intent i = new Intent(getApplicationContext(), FormViewer2.class);
+					Intent i = new Intent(getApplicationContext(), FormViewer.class);
 					i.putExtra("id", id);
 					startActivity(i);
 				}
 			});
+
 		}
 
 		@Override

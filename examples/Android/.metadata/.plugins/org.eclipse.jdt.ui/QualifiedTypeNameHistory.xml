@@ -32,7 +32,6 @@
 <fullyQualifiedTypeName name="android.os.Bundle"/>
 <fullyQualifiedTypeName name="android.content.Intent"/>
 <fullyQualifiedTypeName name="org.tpweb.formbuilder.CouchDB"/>
-<fullyQualifiedTypeName name="org.tpweb.formbuilder.MainActivity"/>
 <fullyQualifiedTypeName name="java.util.Map"/>
 <fullyQualifiedTypeName name="org.tpweb.formbuilder.NanoHTTPD"/>
 <fullyQualifiedTypeName name="webServer.ServerRunner"/>
@@ -54,4 +53,5 @@
 <fullyQualifiedTypeName name="org.json.JSONObject"/>
 <fullyQualifiedTypeName name="org.tpweb.formbuilder.FormViewer.LoadData"/>
 <fullyQualifiedTypeName name="android.webkit.WebSettings"/>
+<fullyQualifiedTypeName name="org.tpweb.formbuilder.MainActivity"/>
 </qualifiedTypeNameHistroy>
