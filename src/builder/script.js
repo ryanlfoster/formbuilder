@@ -51,6 +51,13 @@
  						'username':'', 
  						'password':'', 
  						'server':'http://127.0.0.1:5984'},
+
+ 					alfresco: {
+ 						'use':false,
+						'dbname':'formbuilder', 
+ 						'username':'', 
+ 						'password':'', 
+ 						'server':'http://127.0.0.1:5984'},
  						/*
  					database: {
  						'database':'couchbase',
@@ -916,74 +923,12 @@
 			}
 
 			function push_to_server(publish) {
-				if(defaults.database.database == "couchdb") {
-					$.couch.urlPrefix = defaults.database.server;
-					if(defaults.database.username.length > 0) {
-						$.couch.login({
-    						name: defaults.database.username,
-    						password: defaults.database.password
-						});
-					}
-					var db = $.couch.db(defaults.database.dbname);
-					var data = {_id:defaults.formId, 'html':generateFullHTML(), 'xml':generateXML(), 'publish': publish};
-					if(defaults.formRev != null && defaults.formRev !== undefined && defaults.formRev.length > 0) {
-						data._rev = defaults.formRev;
-					}
-					db.saveDoc (data, {
-    					success: function (d) { 
-    						defaults.formRev = d._rev;
-    						if(publish == 1) {
-    							alert("Formulier is gepubliseerd!");
-    						} else {
-    							alert("Formulier is opgeslagen");
-    						}
-    					},
-    					error: function () { 
-    						alert ("Kan formulier niet opslaan."); 
-    					}
-					});
+				if(defaults.alfresco.use == true) {
+					save_to_alfresco(publish);
+				} else if(defaults.database.database == "couchdb") {
+					save_to_couchdb(publish);
 				} else if(defaults.database.database == "couchdbproxy") {
-					$.ajax({
-    					url: defaults.database.server + '/?action=createdatabase',
-    					type: "POST",
-    					crossDomain: true,
-    					data: {'dbname':defaults.database.dbname},
-    					success: function(res) {
-    						var r = eval('(' + res + ')');
-	    					if(r.ok == true || r.error == "file_exists" || r.db_name == defaults.database.dbname) {
-	    						if(defaults.formRev.length == 0) {
-	    							str = {'publish':publish, 'xml':generateXML(), 'html':generateFullHTML()};
-	    						} else {
-	    							str = {'publish':publish, '_rev':defaults.formRev, 'xml':generateXML(), 'html':generateFullHTML()};
-	    						}
-								$.ajax({
-    								url: defaults.database.server + '/?action=createdocument&dbname=' + defaults.database.dbname + '&id=' + defaults.formId,
-    								type: "POST",
-    								data: str,
-    								success: function(res) {
-    									var r = eval('(' + res + ')');
-    									if(r.id == defaults.formId) {
-    										if(publish == 1) {
-    											alert("Formulier is gepubliseerd!");
-    										} else {
-    											alert("Formulier is opgeslagen");
-    										}
-    									} else {
-    										alert("Fout tijdens opslagen van formulier.");
-    									}
-    								},
-    								error: function(jqXHR, textStatus, errorThrown) {
-    									alert("Kan formulier niet opslaan.");
-    								}
-								});
-        					} else {
-        						alert('Fout tijdens aanmaken database');
-        					}
-    					},
-    					error: function(jqXHR, textStatus, errorThrown) {
-    						alert("Kan geen connectie maken met server.");
-    					}
-					});
+					save_to_couchdb_proxy(publish);
 				} else if(defaults.database.database == "couchbase") {
 					//http://docs.couchbase.com/couchbase-lite/cbl-api/index.html#get-db
 					/*
@@ -991,24 +936,65 @@
 					https://github.com/couchbase/sync_gateway/issues/115
 
 					*/
-					$.ajax({
-    					url: defaults.database.server + '/' + defaults.database.dbname,
-    					type: "GET",
-    					crossDomain: true,
-    					success: function(res) {
-    						var r = eval('(' + res + ')');
+					save_to_couchbase(publish);
+				} else {
+					alert('No database connected!');
+				}
+			}
+		
+			function save_to_alfresco(publish) {
+
+			}
+
+			function save_to_couchdb(publish) {
+				$.couch.urlPrefix = defaults.database.server;
+				if(defaults.database.username.length > 0) {
+					$.couch.login({
+    					name: defaults.database.username,
+    					password: defaults.database.password
+					});
+				}
+				var db = $.couch.db(defaults.database.dbname);
+				var data = {_id:defaults.formId, 'html':generateFullHTML(), 'xml':generateXML(), 'publish': publish};
+				if(defaults.formRev != null && defaults.formRev !== undefined && defaults.formRev.length > 0) {
+					data._rev = defaults.formRev;
+				}
+				db.saveDoc (data, {
+    				success: function (d) { 
+    				defaults.formRev = d._rev;
+    				if(publish == 1) {
+    						alert("Formulier is gepubliseerd!");
+    					} else {
+    						alert("Formulier is opgeslagen");
+    					}
+    				},
+    				error: function () { 
+    					alert ("Kan formulier niet opslaan."); 
+    				}
+				});
+			}
+
+			function save_to_couchdb_proxy(publish) {
+				$.ajax({
+    				url: defaults.database.server + '/?action=createdatabase',
+    				type: "POST",
+    				crossDomain: true,
+    				data: {'dbname':defaults.database.dbname},
+    				success: function(res) {
+    					var r = eval('(' + res + ')');
+	    				if(r.ok == true || r.error == "file_exists" || r.db_name == defaults.database.dbname) {
 	    					if(defaults.formRev.length == 0) {
 	    						str = {'publish':publish, 'xml':generateXML(), 'html':generateFullHTML()};
 	    					} else {
 	    						str = {'publish':publish, '_rev':defaults.formRev, 'xml':generateXML(), 'html':generateFullHTML()};
 	    					}
 							$.ajax({
-    							url: defaults.database.server + '/' + defaults.database.dbname + '/' + defaults.formId,
-    							type: "PUT",
+    							url: defaults.database.server + '/?action=createdocument&dbname=' + defaults.database.dbname + '&id=' + defaults.formId,
+    							type: "POST",
     							data: str,
     							success: function(res) {
     								var r = eval('(' + res + ')');
-    								if(r.id == defaults.formId && r.ok) {
+    								if(r.id == defaults.formId) {
     									if(publish == 1) {
     										alert("Formulier is gepubliseerd!");
     									} else {
@@ -1020,18 +1006,57 @@
     							},
     							error: function(jqXHR, textStatus, errorThrown) {
     								alert("Kan formulier niet opslaan.");
-    							},
-    							dataType:'json'
+    							}
 							});
-    					},
-    					error: function(jqXHR, textStatus, errorThrown) {
-    						alert("Kan geen connectie maken met server.");
-    					},
-    					dataType:'json'
-					});
-				} else {
-					alert('No database connected!');
-				}
+        				} else {
+        					alert('Fout tijdens aanmaken database');
+        				}
+    				},
+    				error: function(jqXHR, textStatus, errorThrown) {
+    					alert("Kan geen connectie maken met server.");
+    				}
+				});
+			}
+
+			function save_to_couchbase(publish) {
+				$.ajax({
+    				url: defaults.database.server + '/' + defaults.database.dbname,
+    				type: "GET",
+    				crossDomain: true,
+    				success: function(res) {
+    					var r = eval('(' + res + ')');
+	    				if(defaults.formRev.length == 0) {
+	    					str = {'publish':publish, 'xml':generateXML(), 'html':generateFullHTML()};
+	    				} else {
+	    					str = {'publish':publish, '_rev':defaults.formRev, 'xml':generateXML(), 'html':generateFullHTML()};
+	    				}
+						$.ajax({
+    						url: defaults.database.server + '/' + defaults.database.dbname + '/' + defaults.formId,
+    						type: "PUT",
+    						data: str,
+    						success: function(res) {
+    							var r = eval('(' + res + ')');
+    							if(r.id == defaults.formId && r.ok) {
+    								if(publish == 1) {
+    									alert("Formulier is gepubliseerd!");
+    								} else {
+    									alert("Formulier is opgeslagen");
+    								}
+    							} else {
+    								alert("Fout tijdens opslagen van formulier.");
+    							}
+    						},
+    						error: function(jqXHR, textStatus, errorThrown) {
+    							alert("Kan formulier niet opslaan.");
+    						},
+    						dataType:'json'
+						});
+    				},
+    				error: function(jqXHR, textStatus, errorThrown) {
+    					alert("Kan geen connectie maken met server.");
+    				},
+    				dataType:'json'
+				});
 			}
 		}
     });
