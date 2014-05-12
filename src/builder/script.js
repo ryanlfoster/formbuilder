@@ -79,12 +79,12 @@
 							'</head>' + 
 							'<body><div class="container">{form}</div></body></html>',
  					basicHTMLUrl:'',
+ 					publish: true,
+ 					save: true,
  			};
  			var CONTAINER = $(this);
  			var FORM = $(this).find('.formbuilder');
  			var FIELD = new Array();
-
-
 
  			FIELD['text'] = {
  				'name':'tekst veld', 
@@ -252,6 +252,13 @@
             var options = $.extend(defaults, options);
 			var selectedIndex = 0;
 			var selectedElement = "";
+
+			if(!defaults.publish) {
+				$('input.publish').remove();
+			}
+			if(!defaults.save) {
+				$('input.save').remove();
+			}
 
 			if(defaults.xml.length > 0) {
 				loadXML();
