@@ -14,7 +14,7 @@
 	<!--<script src="http://code.jquery.com/jquery-1.11.0.js"></script>-->
 
 
-	<script src="script.js"></script>
+	<script src="script.js?v=9"></script>
 	<script>
 		$(function() {
 			var loadForm = "";
@@ -22,7 +22,7 @@
 			loadForm = "";
 			
 			$('.formuliermaker').FormBuilder({
-				INPUT_TYPES:["text", "password", "email", "submit", "select", "checkbox", "radio", "hidden", "textarea"],
+				/*INPUT_TYPES:["text", "password", "email", "submit", "select", "checkbox", "radio", "hidden", "textarea"],*/
 				xml: loadForm,
 				/*database: {
 					'database':'couchdb', 
@@ -37,15 +37,20 @@
 	<style>
 		.formbuilder .row {
 			border: 1px solid #DDD;
+			position: relative;
 		}
+
 		.colomn {
 			border: 1px solid #EEE;
 			min-height: 50px;
 		}
 
-
 		.active {
 			border: 1px solid #000;
+		}
+
+		section {
+			position: relative;
 		}
 	</style>
 </head>
@@ -99,6 +104,24 @@
 							</tr>
 						</table>
 						<input type="submit" value="Voeg rij toe" class="btn btn-primary"><br><br>
+					</div>
+
+					<div class="radiotable">
+						<h4>Waardes</h4>
+						<table class="table waarde">
+							<tr>
+								<td>Label</td>
+								<td>Value</td>
+							</tr>
+						</table>
+						<input type="submit" value="Voeg rij toe" class="btn btn-primary val"><br><br>
+						<h4>Vragen</h4>
+						<table class="table vragen">
+							<tr>
+								<td>Label</td>
+							</tr>
+						</table>
+						<input type="submit" value="Voeg rij toe" class="btn btn-primary qst"><br><br>
 					</div>
 
 					<input type="submit" value="Opslaan" class="btn btn-primary">

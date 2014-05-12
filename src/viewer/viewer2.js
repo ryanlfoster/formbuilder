@@ -198,6 +198,14 @@
                 'preview':'<p>Hier komt je tekst</p>',
                 'options':'label'};
 
+            FIELD['radiotable'] = {
+                'name':'Keuze rondjes table', 
+                'field':'<label>{label}</label><table><tr><th></th><th>{waarde}</th></tr><tr><td>{vraag}</td><td><input type="radio" name="{name_q1}" value="1"></td></table>', 
+                'preview':'<label>{label}</label><table><tr><th></th><th>{waarde}</th></tr><tr><td>{vraag}</td><td><input type="radio" name="{name_q1}" value="1"></td></table>',
+                'options':'name,label'};
+
+
+
             $('html').on('click', '.next', function(e) {
                 e.preventDefault();
                 var section = $(this).parent().parent().parent().parent();
@@ -451,21 +459,19 @@
                                     var settings = field.options.split(",");
                                     var html = field.field;
                                     $.each(settings, function(index, value) {
-                                        html = html.replace('{' + value + '}', colomn.find(value).eq(0).text());
+                                        html = html.replace(new RegExp('{' + value + '}', 'g'), colomn.find(value).eq(0).text());
                                     });
+                                    var h = $(html);
                                     $.each(settings, function(index, value) {
                                        // alert($(html).find('input').val());
-                                            //$(html).find('input').attr(value, colomn.find(value).eq(0).text());
-                                            //alert(value + ' : ' + $(html).find('input').attr(value));
-                                            $(html).find('select').attr(value, colomn.find(value).eq(0).text());
-                                            $(html).find('textarea').attr(value, colomn.find(value).eq(0).text());
-                                    
-                                        
-
+                                        //$(html).find('input').attr(value, colomn.find(value).eq(0).text());
+                                        //alert(value + ' : ' + $(html).find('input').attr(value));
+                                        h.find('select').attr(value, colomn.find(value).eq(0).text());
+                                        h.find('textarea').attr(value, colomn.find(value).eq(0).text());
                                         c.attr('data-frm-' + value, colomn.find(value).eq(0).text());
                                     });
                                     //alert(html);
-                                    c.append(html);
+                                    c.append(h);
 
                                     if(colomn.find('field').text() == "select") {
                                         var json = "[";
@@ -493,6 +499,48 @@
                                             $(c).append('<label><input type="radio" name="' + c.attr('data-frm-name') + '" value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</label>');
                                         });
                                         json += "]";
+                                       // $(c).attr('data-frm-multi', json);
+                                    } else if(colomn.find('field').text() == "radiotable") {
+                                        var json = "[";
+                                        $(c).find('input').remove();
+                                        $(colomn).find('multi').each(function() {
+                                            json += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
+                                            $(c).append('<label><input type="radio" name="' + c.attr('data-frm-name') + '" value="' + $(this).find('value').text() + '">' + $(this).find('label').text() + '</label>');
+                                        });
+                                        json += "]";
+
+
+
+                                        $(c).find('table').remove();
+                                        var datat = $('<table class="table"><tr><th></th></tr><tr><td>{qst}</td></tr></table>');
+                                        var jsonAA = "[";
+                                        var jsonBB = "[";
+                                        $(colomn).find('radio-value').each(function() {
+                                            jsonAA += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
+                                            datat.find('tr:eq(0)').append('<th>' + $(this).find('label').text() + '</th>');
+                                            datat.find('tr:eq(1)').append('<td><input type="radio" name="{name}_{qst_i}" value="' + $(this).find('value').text() + '" /></td>');
+                                        });
+                                        var i = 1;
+                                        var rowradio = "<tr>" + datat.find('tr:eq(1)').html() + "</tr>";
+                                        datat.find("tr:eq(1)").remove();
+                                    
+                                        $(colomn).find('radio-qst').each(function() {
+                                            jsonBB += "{'label':'" + $(this).text() + "'},";
+                                            
+                                            var r = rowradio;
+                                            r = r.replace(/{name}/g, c.attr('data-frm-name'));
+                                            r = r.replace(/{qst_i}/g, i);
+                                            r = r.replace(/{qst}/g, $(this).text());
+                                            datat.append(r);
+                                            i++;
+                                        });
+                                        $(c).append(datat);
+
+
+                                        jsonAA += "]";
+                                        jsonBB += "]";
+                                        $(c).attr('data-frm-radiotable-val', jsonAA);
+                                        $(c).attr('data-frm-radiotable-qst', jsonBB);
                                        // $(c).attr('data-frm-multi', json);
                                     }
                                     r.append(c);

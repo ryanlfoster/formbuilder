@@ -35,6 +35,8 @@
  						"h3",
  						"h4",
  						"p",
+
+ 						"radiotable",
  					],
  					preview: false,
  					newRow: '<div class="row"><a href="javascript:void(0);" class="addColomn">Voeg colom toe</a><br><div class="col-md-12 colomn"></div></div>',
@@ -233,6 +235,13 @@
  				'preview':'<p>Hier komt je tekst</p>',
  				'options':'label'};
 
+            FIELD['radiotable'] = {
+                'name':'Keuze rondjes table', 
+                'field':'<label>{label}</label><table><tr><th></th><th>{waarde}</th></tr><tr><td>{vraag}</td><td><input type="radio" name="{name_q1}" value="1"></td></table>', 
+                'preview':'<label>{label}</label><table><tr><th></th><th>{waarde}</th></tr><tr><td>{vraag}</td><td><input type="radio" name="{name_q1}" value="1"></td></table>',
+                'options':'name,label'};
+
+
             var options = $.extend(defaults, options);
 			var selectedIndex = 0;
 			var selectedElement = "";
@@ -265,7 +274,6 @@
 				$(".colomn").removeClass('active');
 				row.find('.colomn').addClass('active');
 			});
-
 
 			$('.formbuilder').on('click', '.addColomn', function(e) {
 				e.preventDefault();
@@ -354,6 +362,35 @@
 						});
 						json += "]";
 						frm.attr('data-frm-multi', json);
+					} else if(frm.attr('data-name') == "radiotable") {
+						var json = "[";
+						var jsona = "[";
+						frm.find('table').remove();
+						var datat = $('<table class="table"><tr><th></th></tr><tr><td>{qst}</td></tr></table>');
+						$('.settings .radiotable table.waarde tr:gt(0)').each(function() {
+							json += "{'label':'" + $(this).find('[name=r-label]').val() + "', 'value':'" + $(this).find('[name=r-value]').val() + "'},";
+							datat.find('tr:eq(0)').append('<th>' + $(this).find('[name=r-label]').val() + '</th>');
+							datat.find('tr:eq(1)').append('<td><input type="radio" name="{name}_{qst_i}" value="' + $(this).find('[name=r-value]').val() + '" /></td>');
+						});
+
+						var i = 1;
+						var row = "<tr>" + datat.find('tr:eq(1)').html() + "</tr>";
+						datat.find("tr:eq(1)").remove();
+						$('.settings .radiotable table.vragen tr:gt(0)').each(function() {
+							jsona += "{'label':'" + $(this).find('[name=r-label]').val() + "'},";
+							var r = row;
+							r = r.replace(/{name}/g, $(this).find('[name=name]').val());
+							r = r.replace(/{qst_i}/g, i);
+							r = r.replace(/{qst}/g, $(this).find('[name=r-label]').val());
+							datat.append(r);
+							i++;
+						});
+
+						frm.append(datat);
+						json += "]";
+						jsona += "]";
+						frm.attr('data-frm-radiotable-val', json);
+						frm.attr('data-frm-radiotable-qst', jsona);
 					}
 				}
 			});
@@ -362,6 +399,17 @@
 			$('.settings .multi input[type=submit]').click(function(e) {
 				e.preventDefault();
 				$('.multi table').append('<tr><td><input type="text" name="m-label"></td><td><input type="text" name="m-value"></td></tr>');
+			});
+
+
+			$('.settings .radiotable input[type=submit].val').click(function(e) {
+				e.preventDefault();
+				$('.radiotable table.waarde').append('<tr><td><input type="text" name="r-label"></td><td><input type="text" name="r-value"></td></tr>');
+			});
+
+			$('.settings .radiotable input[type=submit].qst').click(function(e) {
+				e.preventDefault();
+				$('.radiotable table.vragen').append('<tr><td><input type="text" name="r-label"></td></tr>');
 			});
 
 			$('input[type=submit].xml').click(function(e) {
@@ -487,6 +535,15 @@
 											str += "<multi><value>" + value.value + "</value><label>" + value.label + "</label></multi>";
 										});
 									}
+								} else if(colomn.attr('data-name') == "radiotable") {
+									var json = eval('(' + colomn.attr('data-frm-radiotable-val') + ')');
+									$.each(json, function(i, value) {
+										str += "<radio-value><value>" + value.value + "</value><label>" + value.label + "</label></radio-value>";
+									});
+									json = eval('(' + colomn.attr('data-frm-radiotable-qst') + ')');
+									$.each(json, function(i, value) {
+										str += "<radio-qst>" + value.label + "</radio-qst>";
+									});
 								}
 							}
 							str += "</colomn>";
@@ -521,7 +578,9 @@
 								var settings = field.options.split(",");
 								var html = field.field;
 								$.each(settings, function(index, value) {
-									html = html.replace('{' + value + '}', colomn.attr('data-frm-' + value));
+									//html = html.replace('{' + value + '}', colomn.attr('data-frm-' + value));
+									html = html.replace(new RegExp('{' + value + '}', 'g'), colomn.attr('data-frm-' + value));
+									//html = html.replace(/{value}/g, colomn.attr('data-frm-' + value));
 								});
 								$(c).append(html);
 								$.each(settings, function(index, value) {
@@ -562,6 +621,30 @@
 									});
 									json += "]";
 									//$(c).attr('data-frm-multi', json);
+								} else if(colomn.attr('data-name') == "radiotable") {
+									$(c).find('table').remove();
+									var datat = $('<table class="table"><tr><th></th></tr><tr><td>{qst}</td></tr></table>');
+									
+									var json = eval('(' + colomn.attr('data-frm-radiotable-val') + ')');
+									$.each(json, function(i, value) {
+										datat.find('tr:eq(0)').append('<th>' + value.label + '</th>');
+										datat.find('tr:eq(1)').append('<td><input type="radio" name="{name}_{qst_i}" value="' + value.value + '" /></td>');
+									});
+									var i = 1;
+									var rowradio = "<tr>" + datat.find('tr:eq(1)').html() + "</tr>";
+									datat.find("tr:eq(1)").remove();
+									
+
+									json = eval('(' + colomn.attr('data-frm-radiotable-qst') + ')');
+									$.each(json, function(i, value) {
+										var r = rowradio;
+										r = r.replace(/{name}/g, colomn.attr('data-frm-name'));
+										r = r.replace(/{qst_i}/g, i);
+										r = r.replace(/{qst}/g, value.label);
+										datat.append(r);
+										i++;
+									});
+									$(c).append(datat);
 								}
 							}
 							row.append(c);
@@ -594,6 +677,8 @@
 									var html = field.field;
 									$.each(settings, function(index, value) {
 										html = html.replace('{' + value + '}', colomn.find(value).eq(0).text());
+										html = html.replace(new RegExp('{' + value + '}', 'g'), colomn.find(value).eq(0).text());
+										//html = html.replace(/{value}/g, colomn.find(value).eq(0).text());
 										if(c.attr('data-frm-' + value) !== undefined) {
 											$(html).find('input').attr(value, colomn.find(value).eq(0).text());
 											$(html).find('select').attr(value, colomn.find(value).eq(0).text());
@@ -630,7 +715,40 @@
 										});
 										json += "]";
 										$(c).attr('data-frm-multi', json);
+									} else if(colomn.find('field').text() == "radiotable") {
+										$(c).find('table').remove();
+										var datat = $('<table class="table"><tr><th></th></tr><tr><td>{qst}</td></tr></table>');
+										var jsonAA = "[";
+										var jsonBB = "[";
+										$(colomn).find('radio-value').each(function() {
+											jsonAA += "{'label':'" + $(this).find('label').text() + "', 'value':'" + $(this).find('value').text() + "'},";
+											datat.find('tr:eq(0)').append('<th>' + $(this).find('label').text() + '</th>');
+											datat.find('tr:eq(1)').append('<td><input type="radio" name="{name}_{qst_i}" value="' + $(this).find('value').text() + '" /></td>');
+										});
+										var i = 1;
+										var rowradio = "<tr>" + datat.find('tr:eq(1)').html() + "</tr>";
+										datat.find("tr:eq(1)").remove();
+									
+										$(colomn).find('radio-qst').each(function() {
+											jsonBB += "{'label':'" + $(this).text() + "'},";
+											
+											var r = rowradio;
+											r = r.replace(/{name}/g, c.attr('data-frm-name'));
+											r = r.replace(/{qst_i}/g, i);
+											r = r.replace(/{qst}/g, $(this).text());
+											datat.append(r);
+											i++;
+										});
+										$(c).append(datat);
+
+
+										jsonAA += "]";
+										jsonBB += "]";
+										$(c).attr('data-frm-radiotable-val', jsonAA);
+										$(c).attr('data-frm-radiotable-qst', jsonBB);
 									}
+
+
 									r.append(c);
 								}
 							});
@@ -651,6 +769,9 @@
 					$('.settings').show();
 					$('.settings > table tr').hide();
 					$('.settings .multi').hide();
+					$('.settings .radiotable').hide();
+					$('.settings .radiotable table.waarde tr:gt(0)').remove();
+					$('.settings .radiotable table.vragen tr:gt(0)').remove();
 					$('.settings .multi tr:gt(0)').remove();
 					var settings = field.options.split(",");
 					$.each(settings, function(index, value) {
@@ -678,6 +799,22 @@
 							});
 						} else {
 							$('.settings .multi table').append('<tr><td><input type="text" name="m-label"></td><td><input type="text" name="m-value"></td></tr>');
+						}
+					} else 
+					if(frm.attr('data-name') == "radiotable") {
+						$('.settings .radiotable').show();
+						if(frm.attr('data-frm-radiotable-qst') !== undefined) {
+							var json = eval('(' + frm.attr('data-frm-radiotable-qst') + ')');
+							$.each(json, function(i, value) {
+								$('.settings .radiotable table.vragen').append('<tr><td><input type="text" name="r-label" value="' + value.label + '"></td></tr>');
+							});
+
+							var json = eval('(' + frm.attr('data-frm-radiotable-val') + ')');
+							$.each(json, function(i, value) {
+								$('.settings .radiotable table.waarde').append('<tr><td><input type="text" name="r-label" value="' + value.label + '"></td><td><input type="text" name="r-value"  value="' + value.value + '"></td></tr>');
+							});
+						} else {
+							//$('.settings .multi table').append('<tr><td><input type="text" name="m-label"></td><td><input type="text" name="m-value"></td></tr>');
 						}
 					}
 				} else {
@@ -723,7 +860,9 @@
 			function createField(data, field) {
 				var str = field;
 				$.each(data, function(i, v) {
-					str = str.replace('{' + i + '}', v);
+					str = str.replace(new RegExp('{' + i + '}', 'g'), v);
+					//str = str.replace('{' + i + '}', v);
+					//str = str.replace(/{i}/g, v);
 				});
 				return str;
 			}
@@ -740,7 +879,10 @@
 							v = settings[i];
 						}
 					}
-					str = str.replace('{' + settings[i] + '}', v);
+					//str = str.replace('{' + settings[i] + '}', v);
+					//str = str.replace(/{settings[i]}/g, v);
+					str = str.replace(new RegExp('{' + settings[i] + '}', 'g'), v);
+
 					frm.attr('data-frm-' + settings[i], v);
 				}
 				return str;

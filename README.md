@@ -471,4 +471,22 @@ The form builder is completely built in HTML5 and JQuery and can be easily integ
 		
 		<td>V</td>
 	</tr>
+	<tr>
+		<td>Radio table</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		<td>V</td>
+		
+		<td>V</td>
+	</tr>
 </table>
